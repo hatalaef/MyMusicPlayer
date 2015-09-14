@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#673ab7</color>
+    <color name="primary_dark">#512da8</color>
+    <color name="primary_light">#d1c4e9</color>
+    <color name="accent">#d500f9</color>
+    <color name="fallback1">#ea80fc</color>
+    <color name="fallback2">#aa00ff</color>
+</resources>
