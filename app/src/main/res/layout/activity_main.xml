@@ -37,41 +37,11 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="1">
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reverse"
-            android:id="@+id/btnReverse"
-            android:padding="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="15dp"
-            android:layout_gravity="left" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Forward"
-            android:id="@+id/btnForward"
-            android:padding="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="15dp"
-            android:layout_gravity="center_horizontal" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Play"
-            android:id="@+id/btnPlay"
-            android:padding="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="15dp"
-            android:layout_gravity="right" />
+            android:id="@+id/imageButton"
+            android:src="@drawable/ic_pause_circle_outline_black_24dp" />
     </LinearLayout>
 
 </LinearLayout>

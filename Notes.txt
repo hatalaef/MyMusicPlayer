@@ -1,0 +1,9 @@
+idPrimary
+    500 - #673ab7
+    100 - #d1c4e9
+    500 - #673ab7 
+    700 - #512da8
+Secondary
+    Accent - A4 #d500f9
+    Fallback - A1 #ea80fc
+    Fallback - A7 #aa00ff

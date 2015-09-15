@@ -13,21 +13,34 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     private ArrayList<Song> songs;
     private LayoutInflater inflater;
-
+    private static ClickListener clickListener;
 
     public SongAdapter(Context context, ArrayList<Song> songs) {
         this.songs = songs;
         this.inflater = LayoutInflater.from(context);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView txtSong;
         TextView txtSongArtist;
         public ViewHolder(View v) {
             super(v);
+            v.setOnClickListener(this);
+            v.setOnLongClickListener(this);
             txtSong = (TextView)v.findViewById(R.id.txtSongName);
             txtSongArtist = (TextView)v.findViewById(R.id.txtSongArtist);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            clickListener.onItemClick(getAdapterPosition(), v);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            clickListener.onItemLongClick(getAdapterPosition(), v);
+            return false;
         }
     }
 
@@ -42,6 +55,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.txtSong.setText(songs.get(i).getTitle());
         viewHolder.txtSongArtist.setText(songs.get(i).getArtist());
+        viewHolder.txtSong.setTag(i);
+        viewHolder.txtSongArtist.setTag(i);
+        songs.get(i).setListId(i);
     }
 
     @Override
@@ -58,4 +74,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
+
+    public void setOnItemClickListener(ClickListener clickListener) {
+        SongAdapter.clickListener = clickListener;
+    }
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+        void onItemLongClick(int position, View v);
+    }
+
+
 }

@@ -4,11 +4,13 @@ public class Song {
     private long id;
     private String title;
     private String artist;
+    private int listId;
 
     public Song(long id, String title, String artist) {
         this.id = id;
         this.title = title;
         this.artist = artist;
+        this.listId = 0;
     }
 
     public long getId() {
@@ -21,5 +23,13 @@ public class Song {
 
     public String getArtist() {
         return artist;
+    }
+
+    public void setListId(int listId) {
+        this.listId = listId;
+    }
+
+    public int getListId() {
+        return listId;
     }
 }

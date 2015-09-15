@@ -1,25 +1,39 @@
 package com.example.emily.mymusicplayer;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.MediaController.MediaPlayerControl;
+import com.example.emily.mymusicplayer.MusicService.MusicBinder;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MediaPlayerControl {
+
+    public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
     private RecyclerView mainListMusic;
-    private RecyclerView.Adapter adapter;
+    private SongAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    private MusicController controller;
     private ArrayList<Song> songList;
+    private MusicService musicService;
+    private Intent playIntent;
+    private boolean musicBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +53,60 @@ public class MainActivity extends Activity {
         adapter = new SongAdapter(this, songList);
         mainListMusic.setAdapter(adapter);
 
+        setController();
+
+
+        adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                songPicked(songList.get(position).getListId());
+            }
+
+            @Override
+            public void onItemLongClick(int position, View v) {
+                songPicked(songList.get(position).getListId());
+            }
+        });
+
+
+
+
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (playIntent == null) {
+            playIntent = new Intent(this, MusicService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(playIntent);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(playIntent);
+        musicService = null;
+        super.onDestroy();
+    }
+
+    private ServiceConnection musicConnection = new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicBinder binder = (MusicBinder)service;
+            //get service
+            musicService = binder.getService();
+            //pass list
+            musicService.setList(songList);
+            musicBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -56,8 +123,8 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_repeat:
         }
 
         return super.onOptionsItemSelected(item);
@@ -65,7 +132,7 @@ public class MainActivity extends Activity {
 
     public void getSongList() {
         ContentResolver musicResolver = getContentResolver();
-        Uri musicUri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI;
+        Uri musicUri = STORAGE_LOCATION;
         Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
 
         if(musicCursor!=null && musicCursor.moveToFirst()){
@@ -85,5 +152,88 @@ public class MainActivity extends Activity {
             }
             while (musicCursor.moveToNext());
         }
+        if (musicCursor != null) {
+            musicCursor.close();
+        }
+    }
+
+    public void songPicked(int i) {
+        musicService.setSong(i);
+        musicService.playSong();
+    }
+
+    private void setController() {
+        controller = new MusicController(this);
+
+        controller.setPrevNextListeners(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //playNext();
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //playPrev();
+            }
+        });
+
+        controller.setMediaPlayer(this);
+        controller.setAnchorView(findViewById(R.id.mainListMusic));
+        controller.setEnabled(true);
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public int getDuration() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        return 0;
+    }
+
+    @Override
+    public void seekTo(int pos) {
+
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return false;
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return false;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return false;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return false;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return 0;
     }
 }
