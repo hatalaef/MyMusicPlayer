@@ -5,12 +5,14 @@ public class Song {
     private String title;
     private String artist;
     private int listId;
+    private int viewAdapterPos;
 
     public Song(long id, String title, String artist) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.listId = 0;
+        viewAdapterPos = 0;
     }
 
     public long getId() {
@@ -25,6 +27,7 @@ public class Song {
         return artist;
     }
 
+    //ListId is probably unnecessary
     public void setListId(int listId) {
         this.listId = listId;
     }
@@ -32,4 +35,15 @@ public class Song {
     public int getListId() {
         return listId;
     }
+
+    public int getViewAdapterPos() {
+        return viewAdapterPos;
+    }
+
+    public void setViewAdapterPos(int viewAdapterPos) {
+        this.viewAdapterPos = viewAdapterPos;
+    }
+
 }
+
+

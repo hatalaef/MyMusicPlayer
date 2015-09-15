@@ -10,6 +10,8 @@ public class MusicController extends MediaController {
         super(c);
     }
 
+    //Keeps the controller on the screen
+    @Override
     public void hide() {
 
     }

@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.MediaController.MediaPlayerControl;
+
 import com.example.emily.mymusicplayer.MusicService.MusicBinder;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     private MusicService musicService;
     private Intent playIntent;
     private boolean musicBound = false;
+    private boolean paused = false;
+    private boolean playbackPaused = false;
+    private ArrayList<View> views;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         layoutManager = new LinearLayoutManager(this);
         mainListMusic.setLayoutManager(layoutManager);
 
-        songList = new ArrayList<Song>();
+        songList = new ArrayList<>();
         getSongList();
 
         adapter = new SongAdapter(this, songList);
@@ -55,21 +59,27 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
         setController();
 
+        //waits for mainListMusic to draw
+        mainListMusic.post(new Runnable() {
+            @Override
+            public void run() {
+                views = new ArrayList<>(adapter.getViews());
+                //ToDo - Need to highlight background of views
+            }
+
+        });
 
         adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                songPicked(songList.get(position).getListId());
+                songPicked(v, songList.get(position).getListId());
             }
 
             @Override
             public void onItemLongClick(int position, View v) {
-                songPicked(songList.get(position).getListId());
+                songPicked(v, songList.get(position).getListId());
             }
         });
-
-
-
 
     }
 
@@ -88,6 +98,27 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         stopService(playIntent);
         musicService = null;
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        paused = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (paused) {
+            setController();
+            paused = false;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        controller.hide();
+        super.onStop();
     }
 
     private ServiceConnection musicConnection = new ServiceConnection(){
@@ -125,6 +156,10 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_repeat:
+                break;
+            case R.id.action_shuffle:
+                musicService.setShuffle();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -157,9 +192,14 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         }
     }
 
-    public void songPicked(int i) {
+    public void songPicked(View v, int i) {
         musicService.setSong(i);
-        musicService.playSong();
+        musicService.playSong(v);
+        if (playbackPaused) {
+            setController();
+            playbackPaused = false;
+        }
+        controller.show(0);
     }
 
     private void setController() {
@@ -168,12 +208,12 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         controller.setPrevNextListeners(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //playNext();
+                playNext();
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //playPrev();
+                playPrev();
             }
         });
 
@@ -182,34 +222,65 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         controller.setEnabled(true);
     }
 
+    private void playNext() {
+        musicService.playNext();
+        if (playbackPaused) {
+            controller.show();
+            playbackPaused = false;
+        }
+        controller.show(0);
+    }
+
+    private void playPrev() {
+        musicService.playPrev();
+        if (playbackPaused) {
+            controller.show();
+            playbackPaused = false;
+        }
+        controller.show(0);
+    }
+
     @Override
     public void start() {
-
+        musicService.go();
     }
 
     @Override
     public void pause() {
-
+        playbackPaused = true;
+        musicService.pausePlayer();
     }
 
     @Override
     public int getDuration() {
-        return 0;
+        if(musicService != null && musicBound && musicService.isPlaying()) {
+            return musicService.getPos();
+        }
+        else
+            return 0;
     }
 
     @Override
     public int getCurrentPosition() {
-        return 0;
+        if(musicService != null && musicBound && musicService.isPlaying()) {
+            return musicService.getPos();
+        }
+        else
+            return 0;
     }
 
     @Override
     public void seekTo(int pos) {
-
+        musicService.seek(pos);
     }
 
     @Override
     public boolean isPlaying() {
-        return false;
+        if(musicService != null && musicBound) {
+            return musicService.isPlaying();
+        }
+        else
+            return false;
     }
 
     @Override
@@ -219,17 +290,17 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
     @Override
     public boolean canPause() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean canSeekBackward() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean canSeekForward() {
-        return false;
+        return true;
     }
 
     @Override
