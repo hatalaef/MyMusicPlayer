@@ -18,7 +18,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private LayoutInflater inflater;
     private static ClickListener clickListener;
     private static ArrayList<View> views;
-    private final Context context;
+    private static Context context;
 
     public SongAdapter(Context context, ArrayList<Song> songs) {
         this.songs = songs;
@@ -31,6 +31,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         TextView txtSong;
         TextView txtSongArtist;
         LinearLayout linearLayout;
+        boolean hasColor;
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
@@ -38,13 +39,17 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             txtSong = (TextView)v.findViewById(R.id.txtSongName);
             txtSongArtist = (TextView)v.findViewById(R.id.txtSongArtist);
             linearLayout = (LinearLayout)v.findViewById(R.id.songLayout);
+            hasColor = false;
             views.add(v);
         }
 
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
-
+            if(!hasColor) {
+                hasColor = true;
+                linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
+            }
         }
 
         @Override
@@ -70,9 +75,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.linearLayout.setTag(i);
         if (songs.get(i).hasColor) {
             viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
+            viewHolder.hasColor = true;
         }
         else {
             viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
+            viewHolder.hasColor = false;
         }
     }
 
