@@ -6,12 +6,14 @@ public class Song {
     private String artist;
     private int listId;
     private int viewAdapterPos;
+    boolean hasColor;
 
     public Song(long id, String title, String artist) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.listId = 0;
+        hasColor = false;
         viewAdapterPos = 0;
     }
 
@@ -42,6 +44,14 @@ public class Song {
 
     public void setViewAdapterPos(int viewAdapterPos) {
         this.viewAdapterPos = viewAdapterPos;
+    }
+
+    public boolean getHasColor() {
+        return hasColor;
+    }
+
+    public void setHasColor(boolean hasColor) {
+        this.hasColor = hasColor;
     }
 
 }
