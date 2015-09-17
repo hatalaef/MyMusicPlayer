@@ -1,6 +1,7 @@
 package com.example.emily.mymusicplayer;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private LayoutInflater inflater;
     private static ClickListener clickListener;
     private static ArrayList<View> views;
+    private final Context context;
 
     public SongAdapter(Context context, ArrayList<Song> songs) {
         this.songs = songs;
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         views = new ArrayList<>();
     }
@@ -41,6 +44,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
+
         }
 
         @Override
@@ -64,8 +68,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
         viewHolder.linearLayout.setTag(i);
-        songs.get(i).setListId(i);
-        songs.get(i).setListId(viewHolder.getAdapterPosition());
+        if (songs.get(i).hasColor) {
+            viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
+        }
+        else {
+            viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
+        }
     }
 
     @Override

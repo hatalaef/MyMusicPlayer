@@ -6,4 +6,5 @@
     <color name="accent">#d500f9</color>
     <color name="fallback1">#ea80fc</color>
     <color name="fallback2">#aa00ff</color>
+    <color name="songRow">#2b2b2b</color>
 </resources>

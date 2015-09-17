@@ -56,7 +56,6 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
         adapter = new SongAdapter(this, songList);
         mainListMusic.setAdapter(adapter);
-
         setController();
 
         //waits for mainListMusic to draw
