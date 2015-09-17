@@ -2,6 +2,7 @@ package com.example.emily.mymusicplayer;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,20 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private LayoutInflater inflater;
     private static ClickListener clickListener;
     private static ArrayList<View> views;
+    private SparseBooleanArray selectedItems;
 
     public SongAdapter(Context context, ArrayList<Song> songs) {
         this.songs = songs;
         this.inflater = LayoutInflater.from(context);
         views = new ArrayList<>();
+        selectedItems = new SparseBooleanArray();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView txtSong;
         TextView txtSongArtist;
         LinearLayout linearLayout;
+        boolean colorBackground;
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
@@ -35,7 +39,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             txtSong = (TextView)v.findViewById(R.id.txtSongName);
             txtSongArtist = (TextView)v.findViewById(R.id.txtSongArtist);
             linearLayout = (LinearLayout)v.findViewById(R.id.songLayout);
-            views.add(v);
+            views.add(linearLayout);
         }
 
         @Override
@@ -48,6 +52,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             clickListener.onItemLongClick(getAdapterPosition(), v);
             return false;
         }
+
+
+    }
+
+    public void changeBack(RecyclerView view) {
+
     }
 
     @Override
@@ -63,9 +73,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSongArtist.setText(songs.get(i).getArtist());
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
-        viewHolder.linearLayout.setTag(i);
-        songs.get(i).setListId(i);
-        songs.get(i).setListId(viewHolder.getAdapterPosition());
+        viewHolder.linearLayout.setTag(songs.get(i).getId());
     }
 
     @Override

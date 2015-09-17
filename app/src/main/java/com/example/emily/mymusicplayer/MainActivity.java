@@ -64,7 +64,8 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             @Override
             public void run() {
                 views = new ArrayList<>(adapter.getViews());
-                //ToDo - Need to highlight background of views
+                //ToDo - Need to highlight background of views. Maybe set a color boolean in song and then observe with datasetobserver, and then change the background.
+                //notifyItemChanged(int position), sparsebooleanarray
             }
 
         });
@@ -223,7 +224,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     }
 
     private void playNext() {
-        musicService.playNext();
+        musicService.playNext(views);
         if (playbackPaused) {
             controller.show();
             playbackPaused = false;
@@ -232,7 +233,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     }
 
     private void playPrev() {
-        musicService.playPrev();
+        musicService.playPrev(views);
         if (playbackPaused) {
             controller.show();
             playbackPaused = false;

@@ -12,7 +12,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import java.io.IOException;
@@ -73,7 +72,7 @@ public class MusicService extends Service implements
         try {
             player.setDataSource(getApplicationContext(), trackUri);
             if (v != null) {
-                v.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.accent));
+                //v.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.accent));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,15 +82,16 @@ public class MusicService extends Service implements
         player.prepareAsync();
     }
 
-    public void playPrev() {
+    public void playPrev(ArrayList<View> views) {
         songPos--;
         if (songPos >= 0) {
             songPos = songs.size() - 1;
         }
+        //playSong(views.get(songs.get(songPos).getListId()));
         playSong(null);
     }
 
-    public void playNext() {
+    public void playNext(ArrayList<View> views) {
         if (isShuffle) {
             int newSong = songPos;
             while (newSong == songPos) {
@@ -104,6 +104,7 @@ public class MusicService extends Service implements
                 songPos = 0;
             }
         }
+        //playSong(views.get(songs.get(songPos).getListId()));
         playSong(null);
     }
 
@@ -156,7 +157,7 @@ public class MusicService extends Service implements
     public void onCompletion(MediaPlayer mp) {
         if(player.getCurrentPosition() > 0) {
             mp.reset();
-            playNext();
+            playNext(null);
         }
     }
 
