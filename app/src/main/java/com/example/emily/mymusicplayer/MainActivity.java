@@ -27,7 +27,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
     private RecyclerView mainListMusic;
-    private SongAdapter adapter;
+    static SongAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private MusicController controller;
@@ -63,11 +63,13 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             @Override
             public void run() {
                 views = new ArrayList<>(adapter.getViews());
-                //ToDo - Need to highlight background of views. Maybe set a color boolean in song and then observe with datasetobserver, and then change the background.
+                //ToDo - Need to highlight background of views. Maybe set a color boolean in song and then observe with datasetobserver, and then change the background. Maybe with a callback.
                 //notifyItemChanged(int position), sparsebooleanarray
             }
 
         });
+
+
 
         adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             @Override
@@ -81,6 +83,10 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             }
         });
 
+    }
+
+    public static void changeAdapter(int position) {
+        adapter.notifyItemChanged(position);
     }
 
     @Override

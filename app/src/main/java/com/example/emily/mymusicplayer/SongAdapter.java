@@ -46,9 +46,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
+            int num = this.getAdapterPosition();
             if(!hasColor) {
                 hasColor = true;
-                linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
+                MainActivity.changeAdapter(this.getAdapterPosition());
             }
         }
 
@@ -57,6 +58,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             clickListener.onItemLongClick(getAdapterPosition(), v);
             return false;
         }
+
+
     }
 
     @Override
@@ -73,13 +76,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
         viewHolder.linearLayout.setTag(i);
-        if (songs.get(i).hasColor) {
+
+        viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
+        if (viewHolder.hasColor) {
             viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
-            viewHolder.hasColor = true;
-        }
-        else {
-            viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
-            viewHolder.hasColor = false;
         }
     }
 

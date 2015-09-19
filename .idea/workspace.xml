@@ -21,7 +21,10 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5990602-4965-4375-bb83-420e4f3dfec6" name="Default" comment="">
+    <list default="true" id="e5990602-4965-4375-bb83-420e4f3dfec6" name="Default" comment="changed .gitignore and Project Name&#10;">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/SongAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/SongAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MyMusicPlayer.iws" />
@@ -50,18 +53,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="66" column="69" selection-start-line="66" selection-start-column="69" selection-end-line="66" selection-end-column="69" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MusicService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MusicService.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -97,15 +88,25 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="88" column="0" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2925#2926#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="SongAdapter.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/SongAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6006098">
-              <caret line="76" column="20" selection-start-line="76" selection-start-column="20" selection-end-line="76" selection-end-column="20" />
-              <folding>
-                <element signature="e#3216#3217#0" expanded="true" />
-                <element signature="e#3266#3267#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="2.1435897">
+              <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -1239,7 +1240,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="C:\Users\Glenn Hatala\AndroidStudioProjects\MyMusicPlayer" value="4327014538010" />
+        <entry key="C:\Users\Glenn Hatala\AndroidStudioProjects\MyMusicPlayer" value="4327016393105" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -1567,21 +1568,28 @@
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/selector_row.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MusicService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/song.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/SongAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/SongAdapter.java" />
       </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Bundled (Maven 3)" />
+      </MavenGeneralSettings>
     </option>
   </component>
   <component name="NamedScopeManager">
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="234" />
-    <option name="y" value="161" />
-    <option name="width" value="1520" />
-    <option name="height" value="833" />
+    <option name="x" value="233" />
+    <option name="y" value="131" />
+    <option name="width" value="1652" />
+    <option name="height" value="817" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -1609,36 +1617,17 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="MyMusic" />
+              <option name="myItemId" value="MyMusicPlayer" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Gradle Scripts" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="MyMusic" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MyMusic" />
+              <option name="myItemId" value="MyMusicPlayer" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -1648,8 +1637,9 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="ProjectPane" />
+      <pane id="Scratches" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -1940,7 +1930,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="234" y="161" width="1520" height="833" extended-state="0" />
+    <frame x="233" y="131" width="1652" height="817" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32780847" sideWeight="0.49434817" order="6" side_tool="false" content_ui="tabs" />
@@ -1950,25 +1940,25 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28777778" sideWeight="0.510661" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.47415066" sideWeight="0.48933902" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36762482" sideWeight="0.48680905" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32918552" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32900432" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.42937854" sideWeight="0.5082192" order="12" side_tool="true" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36762482" sideWeight="0.5131909" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22054794" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.048366833" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16490166" sideWeight="0.46105528" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47269303" sideWeight="0.46369863" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.42155525" sideWeight="0.89600605" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22333333" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32918552" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.020754717" sideWeight="0.49736246" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1996,7 +1986,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="50" />
+      <option name="time" value="59" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -2005,10 +1995,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#3216#3217#0" expanded="true" />
-            <element signature="e#3266#3267#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2018,6 +2005,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2055,10 +2043,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="80" column="4" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="4" />
-          <folding>
-            <element signature="e#3216#3217#0" expanded="true" />
-            <element signature="e#3266#3267#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2068,6 +2053,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2076,10 +2062,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
-          <folding>
-            <element signature="e#3216#3217#0" expanded="true" />
-            <element signature="e#3266#3267#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2136,6 +2119,7 @@
           <caret line="238" column="30" selection-start-line="238" selection-start-column="30" selection-end-line="238" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2144,10 +2128,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="50" column="32" selection-start-line="50" selection-start-column="32" selection-end-line="50" selection-end-column="32" />
-          <folding>
-            <element signature="e#3216#3217#0" expanded="true" />
-            <element signature="e#3266#3267#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2285,35 +2266,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/os/Looper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.34393063">
-          <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/os/Handler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24566475">
-          <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/Song.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="16" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="16" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="66" column="69" selection-start-line="66" selection-start-column="69" selection-end-line="66" selection-end-column="69" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2324,22 +2281,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.0.1/recyclerview-v7-23.0.1-sources.jar!/android/support/v7/widget/RecyclerView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="8400" column="0" selection-start-line="8400" selection-start-column="0" selection-end-line="8400" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/view/View.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.955414">
-          <caret line="5254" column="0" selection-start-line="5254" selection-start-column="0" selection-end-line="5254" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2391,7 +2332,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2399,7 +2339,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2407,7 +2346,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2415,7 +2353,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2423,7 +2360,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2431,18 +2367,60 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/view/View.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21179" column="0" selection-start-line="21179" selection-start-column="0" selection-end-line="21179" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/os/Looper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="152" column="0" selection-start-line="152" selection-start-column="0" selection-end-line="152" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/os/Handler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
+          <folding>
+            <element signature="e#29660#29661#0" expanded="true" />
+            <element signature="e#29698#29699#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="88" column="0" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.0.1/recyclerview-v7-23.0.1-sources.jar!/android/support/v7/widget/RecyclerView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.23282443">
+          <caret line="8400" column="0" selection-start-line="8400" selection-start-column="0" selection-end-line="8400" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/emily/mymusicplayer/SongAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6006098">
-          <caret line="76" column="20" selection-start-line="76" selection-start-column="20" selection-end-line="76" selection-end-column="20" />
-          <folding>
-            <element signature="e#3216#3217#0" expanded="true" />
-            <element signature="e#3266#3267#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="2.1435897">
+          <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
