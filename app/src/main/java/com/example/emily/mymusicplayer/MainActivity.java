@@ -63,16 +63,19 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             @Override
             public void run() {
                 views = new ArrayList<>(adapter.getViews());
-                //ToDo - Need to highlight background of views. Maybe set a color boolean in song and then observe with datasetobserver, and then change the background.
+                //ToDo - Need to highlight background of views. Maybe set a color boolean in song and then observe with datasetobserver, and then change the background. Maybe with a callback.
                 //notifyItemChanged(int position), sparsebooleanarray
             }
 
         });
 
+
+
         adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 songPicked(v, songList.get(position).getListId());
+                adapter.notifyItemChanged(position);
             }
 
             @Override
@@ -81,6 +84,10 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             }
         });
 
+    }
+
+    public static void changeAdapter(int position) {
+        //adapter.notifyItemChanged(position);
     }
 
     @Override

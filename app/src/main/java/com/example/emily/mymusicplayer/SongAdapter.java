@@ -14,7 +14,7 @@ import java.util.ArrayList;
 //Adapter class for the RecyclerView. To get click listeners on items, had to use an interface. Getting tags from the view outside of the class seems very hard.
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
-    private ArrayList<Song> songs;
+    private static ArrayList<Song> songs;
     private LayoutInflater inflater;
     private static ClickListener clickListener;
     private static ArrayList<View> views;
@@ -39,24 +39,29 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             txtSong = (TextView)v.findViewById(R.id.txtSongName);
             txtSongArtist = (TextView)v.findViewById(R.id.txtSongArtist);
             linearLayout = (LinearLayout)v.findViewById(R.id.songLayout);
-            hasColor = false;
             views.add(linearLayout);
         }
 
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
-            if(!hasColor) {
-                hasColor = true;
-                linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
-            }
+            if(!songs.get(this.getAdapterPosition()).getHasColor())
+                songs.get(this.getAdapterPosition()).setHasColor(true);
         }
 
         @Override
         public boolean onLongClick(View v) {
             clickListener.onItemLongClick(getAdapterPosition(), v);
+            if(!songs.get(this.getAdapterPosition()).getHasColor())
+                songs.get(this.getAdapterPosition()).setHasColor(true);
             return false;
         }
+
+
+    }
+
+    public void changeItem() {
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -73,13 +78,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
         viewHolder.linearLayout.setTag(i);
-        if (songs.get(i).hasColor) {
+
+        viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
+        if (songs.get(i).getHasColor()) {
             viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
-            viewHolder.hasColor = true;
-        }
-        else {
-            viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
-            viewHolder.hasColor = false;
         }
     }
 
