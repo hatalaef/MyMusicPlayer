@@ -1921,7 +1921,13 @@
       <option name="project" value="LOCAL" />
       <updated>1442626700039</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="changed .gitignore and Project Name&#10;">
+      <created>1442626717391</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1442626717391</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
