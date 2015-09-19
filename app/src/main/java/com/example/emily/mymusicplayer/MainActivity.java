@@ -27,7 +27,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
     private RecyclerView mainListMusic;
-    static SongAdapter adapter;
+    private SongAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private MusicController controller;
@@ -75,6 +75,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             @Override
             public void onItemClick(int position, View v) {
                 songPicked(v, songList.get(position).getListId());
+                adapter.notifyItemChanged(position);
             }
 
             @Override
@@ -86,7 +87,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     }
 
     public static void changeAdapter(int position) {
-        adapter.notifyItemChanged(position);
+        //adapter.notifyItemChanged(position);
     }
 
     @Override
