@@ -12,7 +12,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +74,13 @@ public class MusicService extends Service implements
         try {
             player.setDataSource(getApplicationContext(), trackUri);
             if (v != null) {
-                //v.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.accent));
+                songs.get(songPos).setHasColor(true);
+                LinearLayout recyclerView = (RecyclerView)(LinearLayout) v.getParent().getParent();
+                //RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) recyclerView.getLayoutParams();
+                Class a = recyclerView.getLayoutParams().getClass();
+                String b = a.toString();
+                //songs.get(lp.getViewAdapterPosition()).setHasColor(true);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
