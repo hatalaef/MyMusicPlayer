@@ -1,9 +1,17 @@
-idPrimary
-    500 - #673ab7
-    100 - #d1c4e9
-    500 - #673ab7 
-    700 - #512da8
-Secondary
-    Accent - A4 #d500f9
-    Fallback - A1 #ea80fc
-    Fallback - A7 #aa00ff
+Stuff to Do!
+
+    Get view for other methods of play
+        -Shuffle
+        -Play next/prev
+    Playlists
+    Editing
+		-Tagging
+		-Deleting
+		-Renaming
+		-Moving
+    Load all songs from folder
+	Play buttons that stick at the bottom
+	Art
+	For the car
+
+    Computer syncing

@@ -74,7 +74,8 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             //changes color
             @Override
             public void onItemClick(int position, View v) {
-                songPicked(v, songList.get(position).getListId());
+                //songPicked(v, songList.get(position).getListId());
+                songPicked(v, position);
                 adapter.notifyItemChanged(position);
             }
 
