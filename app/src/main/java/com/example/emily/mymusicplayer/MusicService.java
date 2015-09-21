@@ -74,9 +74,8 @@ public class MusicService extends Service implements
             player.setDataSource(getApplicationContext(), trackUri);
             if (v != null) {
                 songs.get(songPos).setHasColor(true);
-                RecyclerView recyclerView = (RecyclerView) v.getParent().getParent();
-                RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) recyclerView.getLayoutParams();
-                songs.get(lp.getViewAdapterPosition()).setHasColor(true);
+                RecyclerView recyclerView = (RecyclerView) v.getParent();
+                songs.get(recyclerView.getChildAdapterPosition(v)).setHasColor(true);
 
             }
         } catch (IOException e) {
