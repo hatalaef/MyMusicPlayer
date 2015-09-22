@@ -63,8 +63,6 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             @Override
             public void run() {
                 views = new ArrayList<>(adapter.getViews());
-                mainListMusic.setItemAnimator(new MyAnimator());
-
             }
 
         });

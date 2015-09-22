@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import java.io.IOException;
@@ -81,13 +82,14 @@ public class MusicService extends Service implements
             player.setDataSource(getApplicationContext(), trackUri);
             LinearLayout theView = songs.get(songPos).getTheView();
             LinearLayout theOldView = songs.get(oldSong).getTheView();
-
+            Log.d("debug", String.format("Title: %s, Artist: %s, Uri: %s, Pos: %s",
+                    songTitle, playSong.getArtist(), trackUri, songPos));
             //getting rid of old color
             if (theOldView != null && theOldView.getParent() != null) {
                 RecyclerView recyclerView = (RecyclerView) theOldView.getParent();
                 songs.get(recyclerView.getChildAdapterPosition(theOldView)).setHasColor(false);
-                int a = recyclerView.getChildAdapterPosition(theOldView);
                 adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(theOldView));
+                Log.d("debug", String.format("OldAdapterPos: %d",recyclerView.getChildAdapterPosition(theOldView)));
             }
             //adding new color
             if (theView != null&& theView.getParent() != null) {
@@ -95,6 +97,7 @@ public class MusicService extends Service implements
                 songs.get(recyclerView.getChildAdapterPosition(theView)).setHasColor(true);
                 adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(theView));
                 oldSong = recyclerView.getChildAdapterPosition(theView);
+                Log.d("debug", String.format("NewAdapterPos: %d",recyclerView.getChildAdapterPosition(theView)));
             }
         } catch (IOException e) {
             e.printStackTrace();

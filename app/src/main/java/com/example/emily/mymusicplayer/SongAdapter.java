@@ -56,8 +56,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 songs.get(this.getAdapterPosition()).setHasColor(true);
             return false;
         }
-
-
     }
 
     @Override
@@ -73,7 +71,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSongArtist.setText(songs.get(i).getArtist());
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
-        viewHolder.linearLayout.setTag(i);
         songs.get(i).setTheView((LinearLayout)viewHolder.itemView);
 
         viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
