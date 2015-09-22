@@ -76,13 +76,14 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             public void onItemClick(int position, View v) {
                 //songPicked(v, songList.get(position).getListId());
                 songPicked(v, position);
-                adapter.notifyItemChanged(position);
+                //adapter.notifyItemChanged(position);
             }
 
             @Override
             public void onItemLongClick(int position, View v) {
-                songPicked(v, songList.get(position).getListId());
-                adapter.notifyItemChanged(position);
+                //songPicked(v, songList.get(position).getListId());
+                songPicked(v, position);
+                //adapter.notifyItemChanged(position);
             }
         });
 
@@ -134,7 +135,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             //get service
             musicService = binder.getService();
             //pass list
-            musicService.setList(songList);
+            musicService.setList(songList, mainListMusic, adapter);
             musicBound = true;
         }
 
@@ -228,7 +229,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     }
 
     private void playNext() {
-        musicService.playNext(views);
+        musicService.playNext();
         if (playbackPaused) {
             controller.show();
             playbackPaused = false;
@@ -237,7 +238,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     }
 
     private void playPrev() {
-        musicService.playPrev(views);
+        musicService.playPrev();
         if (playbackPaused) {
             controller.show();
             playbackPaused = false;

@@ -14,13 +14,14 @@ import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class MusicService extends Service implements
-        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     private static final int NOTIFY_ID = 1;
     private MediaPlayer player;
@@ -30,6 +31,8 @@ public class MusicService extends Service implements
     private String songTitle = "";
     private boolean isShuffle = false;
     private Random rand;
+    private RecyclerView mainListMusic;
+    private SongAdapter adapter;
 
     @Override
     public void onCreate() {
@@ -50,12 +53,15 @@ public class MusicService extends Service implements
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         player.setOnPreparedListener(this);
-        player.setOnCompletionListener(this);
+        //player.setOnCompletionListener(this);
+        player.setOnCompletionListener(new onCompletionListener());
         player.setOnErrorListener(this);
     }
 
-    public void setList(ArrayList<Song> songs) {
+    public void setList(ArrayList<Song> songs, RecyclerView mainListMusic, SongAdapter adapter) {
         this.songs = songs;
+        this.mainListMusic = mainListMusic;
+        this.adapter = adapter;
     }
 
     public class MusicBinder extends Binder {
@@ -76,7 +82,7 @@ public class MusicService extends Service implements
                 songs.get(songPos).setHasColor(true);
                 RecyclerView recyclerView = (RecyclerView) v.getParent();
                 songs.get(recyclerView.getChildAdapterPosition(v)).setHasColor(true);
-
+                adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(v));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,16 +92,16 @@ public class MusicService extends Service implements
         player.prepareAsync();
     }
 
-    public void playPrev(ArrayList<View> views) {
+    public void playPrev() {
         songPos--;
         if (songPos >= 0) {
             songPos = songs.size() - 1;
         }
-        //playSong(views.get(songs.get(songPos).getListId()));
-        playSong(null);
+        LinearLayout songLayout = (LinearLayout)mainListMusic.findViewById(R.id.songLayout);
+        playSong(songLayout);
     }
 
-    public void playNext(ArrayList<View> views) {
+    public void playNext() {
         if (isShuffle) {
             int newSong = songPos;
             while (newSong == songPos) {
@@ -108,8 +114,8 @@ public class MusicService extends Service implements
                 songPos = 0;
             }
         }
-        //playSong(views.get(songs.get(songPos).getListId()));
-        playSong(null);
+        LinearLayout songLayout = (LinearLayout)mainListMusic.findViewById(R.id.songLayout);
+        playSong(songLayout);
     }
 
     public void setShuffle() {
@@ -157,11 +163,14 @@ public class MusicService extends Service implements
         return false;
     }
 
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        if(player.getCurrentPosition() > 0) {
-            mp.reset();
-            playNext(null);
+    private class onCompletionListener implements MediaPlayer.OnCompletionListener {
+
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            if(player.getCurrentPosition() > 0) {
+                mp.reset();
+                playNext();
+            }
         }
     }
 
@@ -174,6 +183,7 @@ public class MusicService extends Service implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        //mp.setOnCompletionListener(new onCompletionListener());
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);

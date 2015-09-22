@@ -78,6 +78,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
         viewHolder.linearLayout.setTag(i);
+        songs.get(i).setListId(i);
 
         viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
         if (songs.get(i).getHasColor()) {
