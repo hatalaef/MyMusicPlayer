@@ -31,7 +31,9 @@ proguard/
 #Windows
 Thumbs.db
 
+*.iml
 misc.xml
+.idea/libraries/
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/datasources.xml
