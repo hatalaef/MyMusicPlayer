@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class MusicService extends Service implements
     private Random rand;
     private RecyclerView mainListMusic;
     private SongAdapter adapter;
-    private LinearLayout oldPosition;
+    private int oldSong;
 
     @Override
     public void onCreate() {
@@ -63,7 +62,7 @@ public class MusicService extends Service implements
         this.songs = songs;
         this.mainListMusic = mainListMusic;
         this.adapter = adapter;
-        oldPosition = (LinearLayout)mainListMusic.findViewById(R.id.songLayout);
+        oldSong = 0;
     }
 
     public class MusicBinder extends Binder {
@@ -72,7 +71,7 @@ public class MusicService extends Service implements
         }
     }
 
-    public void playSong(View v) {
+    public void playSong() {
         player.reset();
         Song playSong = songs.get(songPos);
         songTitle = playSong.getTitle();
@@ -80,20 +79,22 @@ public class MusicService extends Service implements
         Uri trackUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, currSong);
         try {
             player.setDataSource(getApplicationContext(), trackUri);
+            LinearLayout theView = songs.get(songPos).getTheView();
+            LinearLayout theOldView = songs.get(oldSong).getTheView();
+
             //getting rid of old color
-            if (oldPosition != null) {
-                //songs.get(songPos).setHasColor(true);
-                //RecyclerView recyclerView = (RecyclerView) oldPosition.getParent();
-                songs.get(mainListMusic.getChildAdapterPosition(oldPosition)).setHasColor(false);
-                adapter.notifyItemChanged(mainListMusic.getChildAdapterPosition(oldPosition));
+            if (theOldView != null && theOldView.getParent() != null) {
+                RecyclerView recyclerView = (RecyclerView) theOldView.getParent();
+                songs.get(recyclerView.getChildAdapterPosition(theOldView)).setHasColor(false);
+                int a = recyclerView.getChildAdapterPosition(theOldView);
+                adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(theOldView));
             }
             //adding new color
-            if (v != null&& v.getParent() != null) {
-                //songs.get(songPos).setHasColor(true);
-                RecyclerView recyclerView = (RecyclerView) v.getParent();
-                songs.get(recyclerView.getChildAdapterPosition(v)).setHasColor(true);
-                adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(v));
-                oldPosition = (LinearLayout) v;
+            if (theView != null&& theView.getParent() != null) {
+                RecyclerView recyclerView = (RecyclerView) theView.getParent();
+                songs.get(recyclerView.getChildAdapterPosition(theView)).setHasColor(true);
+                adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(theView));
+                oldSong = recyclerView.getChildAdapterPosition(theView);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,14 +106,14 @@ public class MusicService extends Service implements
 
     public void playPrev() {
         songPos--;
-        if (songPos >= 0) {
+        if (songPos < 0) {
             songPos = songs.size() - 1;
         }
-        LinearLayout songLayout = (LinearLayout)mainListMusic.findViewById(R.id.songLayout);
-        playSong(songLayout);
+        playSong();
     }
 
     public void playNext() {
+
         if (isShuffle) {
             int newSong = songPos;
             while (newSong == songPos) {
@@ -121,12 +122,11 @@ public class MusicService extends Service implements
             songPos = newSong;
         } else {
             songPos++;
-            if (songPos >= songs.size() - 1) {
+            if (songPos > songs.size() - 1) {
                 songPos = 0;
             }
         }
-        LinearLayout songLayout = (LinearLayout)mainListMusic.findViewById(R.id.songLayout);
-        playSong(songLayout);
+        playSong();
     }
 
     public void setShuffle() {

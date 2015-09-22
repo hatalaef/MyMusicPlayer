@@ -1,12 +1,15 @@
 package com.example.emily.mymusicplayer;
 
+import android.widget.LinearLayout;
+
 public class Song {
     private long id;
     private String title;
     private String artist;
-    private int listId;
+    private long listId;
     private int viewAdapterPos;
     boolean hasColor;
+    private LinearLayout theView;
 
     public Song(long id, String title, String artist) {
         this.id = id;
@@ -30,11 +33,11 @@ public class Song {
     }
 
     //ListId is probably unnecessary
-    public void setListId(int listId) {
+    public void setListId(long listId) {
         this.listId = listId;
     }
 
-    public int getListId() {
+    public long getListId() {
         return listId;
     }
 
@@ -52,6 +55,14 @@ public class Song {
 
     public void setHasColor(boolean hasColor) {
         this.hasColor = hasColor;
+    }
+
+    public LinearLayout getTheView() {
+        return theView;
+    }
+
+    public void setTheView(LinearLayout theView) {
+        this.theView = theView;
     }
 
 }

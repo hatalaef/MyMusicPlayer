@@ -60,10 +60,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     }
 
-    public void changeItem() {
-        this.notifyDataSetChanged();
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = inflater.inflate(R.layout.song, viewGroup, false);
@@ -78,7 +74,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
         viewHolder.linearLayout.setTag(i);
-        songs.get(i).setListId(i);
+        songs.get(i).setTheView((LinearLayout)viewHolder.itemView);
 
         viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
         if (songs.get(i).getHasColor()) {

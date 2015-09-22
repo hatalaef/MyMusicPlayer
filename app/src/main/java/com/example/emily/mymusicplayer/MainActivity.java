@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             @Override
             public void run() {
                 views = new ArrayList<>(adapter.getViews());
+                mainListMusic.setItemAnimator(new MyAnimator());
 
             }
 
@@ -74,16 +75,12 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             //changes color
             @Override
             public void onItemClick(int position, View v) {
-                //songPicked(v, songList.get(position).getListId());
                 songPicked(v, position);
-                //adapter.notifyItemChanged(position);
             }
 
             @Override
             public void onItemLongClick(int position, View v) {
-                //songPicked(v, songList.get(position).getListId());
                 songPicked(v, position);
-                //adapter.notifyItemChanged(position);
             }
         });
 
@@ -200,7 +197,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
     public void songPicked(View v, int i) {
         musicService.setSong(i);
-        musicService.playSong(v);
+        musicService.playSong();
         if (playbackPaused) {
             setController();
             playbackPaused = false;
