@@ -33,6 +33,7 @@ public class MusicService extends Service implements
     private Random rand;
     private RecyclerView mainListMusic;
     private SongAdapter adapter;
+    private LinearLayout oldPosition;
 
     @Override
     public void onCreate() {
@@ -62,6 +63,7 @@ public class MusicService extends Service implements
         this.songs = songs;
         this.mainListMusic = mainListMusic;
         this.adapter = adapter;
+        oldPosition = (LinearLayout)mainListMusic.findViewById(R.id.songLayout);
     }
 
     public class MusicBinder extends Binder {
@@ -78,11 +80,20 @@ public class MusicService extends Service implements
         Uri trackUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, currSong);
         try {
             player.setDataSource(getApplicationContext(), trackUri);
-            if (v != null) {
-                songs.get(songPos).setHasColor(true);
+            //getting rid of old color
+            if (oldPosition != null) {
+                //songs.get(songPos).setHasColor(true);
+                //RecyclerView recyclerView = (RecyclerView) oldPosition.getParent();
+                songs.get(mainListMusic.getChildAdapterPosition(oldPosition)).setHasColor(false);
+                adapter.notifyItemChanged(mainListMusic.getChildAdapterPosition(oldPosition));
+            }
+            //adding new color
+            if (v != null&& v.getParent() != null) {
+                //songs.get(songPos).setHasColor(true);
                 RecyclerView recyclerView = (RecyclerView) v.getParent();
                 songs.get(recyclerView.getChildAdapterPosition(v)).setHasColor(true);
                 adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(v));
+                oldPosition = (LinearLayout) v;
             }
         } catch (IOException e) {
             e.printStackTrace();
