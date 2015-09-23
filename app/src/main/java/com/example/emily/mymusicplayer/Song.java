@@ -1,13 +1,10 @@
 package com.example.emily.mymusicplayer;
 
-import android.widget.LinearLayout;
-
 public class Song {
     private long id;
     private String title;
     private String artist;
     boolean hasColor;
-    private LinearLayout theView;
 
     public Song(long id, String title, String artist) {
         this.id = id;
@@ -36,17 +33,9 @@ public class Song {
         this.hasColor = hasColor;
     }
 
-    public LinearLayout getTheView() {
-        return theView;
-    }
-
-    public void setTheView(LinearLayout theView) {
-        this.theView = theView;
-    }
-
     @Override
     public String toString() {
-        return String.format("Song - Id: %d, Title: %s, Artist: %s, HasColor: %b, LayoutId: %d", id, title, artist, hasColor, theView.getId());
+        return String.format("Song - Id: %d, Title: %s, Artist: %s, HasColor: %b", id, title, artist, hasColor);
     }
 
 }

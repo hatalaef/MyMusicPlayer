@@ -38,7 +38,6 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     private boolean musicBound = false;
     private boolean paused = false;
     private boolean playbackPaused = false;
-    private ArrayList<View> views;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +59,11 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         setController();
 
         //waits for mainListMusic to draw
-        mainListMusic.post(new Runnable() {
-            @Override
-            public void run() {
-                views = new ArrayList<>(adapter.getViews());
-            }
-
-        });
+        //mainListMusic.post(new Runnable() {
+        //    @Override
+        //    public void run() {
+        //   }
+        //});
 
 
 
@@ -74,12 +71,12 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             //changes color
             @Override
             public void onItemClick(int position, View v) {
-                songPicked(v, position);
+                songPicked(position);
             }
 
             @Override
             public void onItemLongClick(int position, View v) {
-                songPicked(v, position);
+                songPicked(position);
             }
         });
 
@@ -131,7 +128,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
             //get service
             musicService = binder.getService();
             //pass list
-            musicService.setList(songList, mainListMusic, adapter, layoutManager);
+            musicService.setList(songList, adapter);
             musicBound = true;
         }
 
@@ -194,7 +191,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         }
     }
 
-    public void songPicked(View v, int i) {
+    public void songPicked(int i) {
         musicService.setSong(i);
         musicService.playSong();
         if (playbackPaused) {
