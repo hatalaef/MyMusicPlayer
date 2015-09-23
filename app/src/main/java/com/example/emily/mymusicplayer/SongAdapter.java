@@ -17,22 +17,18 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private static ArrayList<Song> songs;
     private LayoutInflater inflater;
     private static ClickListener clickListener;
-    private static ArrayList<View> views;
     private static Context context;
 
     public SongAdapter(Context context, ArrayList<Song> songs) {
-        this.songs = songs;
-        this.context = context;
+        SongAdapter.songs = songs;
+        SongAdapter.context = context;
         this.inflater = LayoutInflater.from(context);
-        views = new ArrayList<>();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView txtSong;
         TextView txtSongArtist;
         LinearLayout linearLayout;
-        boolean hasColor;
-        Song theSong;
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
@@ -40,7 +36,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             txtSong = (TextView)v.findViewById(R.id.txtSongName);
             txtSongArtist = (TextView)v.findViewById(R.id.txtSongArtist);
             linearLayout = (LinearLayout)v.findViewById(R.id.songLayout);
-            views.add(linearLayout);
         }
 
         @Override
@@ -65,15 +60,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         return new ViewHolder(v);
     }
 
-    //like the getView on a ListView, this is where the data is bound to the views
+    //like the getView on a ListView, this is where the data is bound to the views. called when redrawn for scrolls or w/e
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.txtSong.setText(songs.get(i).getTitle());
         viewHolder.txtSongArtist.setText(songs.get(i).getArtist());
-        viewHolder.txtSong.setTag(i);
-        viewHolder.txtSongArtist.setTag(i);
-        songs.get(i).setTheView((LinearLayout)viewHolder.itemView);
-        viewHolder.theSong = songs.get(i);
+
+        viewHolder.txtSong.setTag(i); //used I think
+        viewHolder.txtSongArtist.setTag(i); //maybe not used
+
+        //change view if playing
         viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
         if (songs.get(i).getHasColor()) {
             viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
@@ -103,10 +99,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     public interface ClickListener {
         void onItemClick(int position, View v);
         void onItemLongClick(int position, View v);
-    }
-
-    public ArrayList<View> getViews() {
-        return views;
     }
 
 }

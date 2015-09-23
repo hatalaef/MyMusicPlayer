@@ -12,9 +12,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,18 +29,14 @@ public class MusicService extends Service implements
     private String songTitle = "";
     private boolean isShuffle = false;
     private Random rand;
-    private RecyclerView mainListMusic;
     private SongAdapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
     private int oldSong;
-    private ArrayList<LinearLayout> notVisibleLayouts;
 
     @Override
     public void onCreate() {
         super.onCreate();
         songPos = 0;
         rand = new Random();
-        notVisibleLayouts = new ArrayList<>();
         player = new MediaPlayer();
         initMusicPlayer();
     }
@@ -62,12 +56,10 @@ public class MusicService extends Service implements
         player.setOnErrorListener(this);
     }
 
-    public void setList(ArrayList<Song> songs, RecyclerView mainListMusic, SongAdapter adapter, RecyclerView.LayoutManager layoutManager) {
+    public void setList(ArrayList<Song> songs,SongAdapter adapter) {
         this.songs = songs;
-        this.mainListMusic = mainListMusic;
         this.adapter = adapter;
         oldSong = 0;
-        this.layoutManager = layoutManager;
     }
 
     public class MusicBinder extends Binder {
