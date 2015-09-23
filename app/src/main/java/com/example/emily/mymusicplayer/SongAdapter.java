@@ -32,6 +32,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         TextView txtSongArtist;
         LinearLayout linearLayout;
         boolean hasColor;
+        Song theSong;
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
@@ -72,7 +73,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         viewHolder.txtSong.setTag(i);
         viewHolder.txtSongArtist.setTag(i);
         songs.get(i).setTheView((LinearLayout)viewHolder.itemView);
-
+        viewHolder.theSong = songs.get(i);
         viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
         if (songs.get(i).getHasColor()) {
             viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
@@ -107,6 +108,5 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     public ArrayList<View> getViews() {
         return views;
     }
-
 
 }

@@ -33,13 +33,16 @@ public class MusicService extends Service implements
     private Random rand;
     private RecyclerView mainListMusic;
     private SongAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
     private int oldSong;
+    private ArrayList<LinearLayout> notVisibleLayouts;
 
     @Override
     public void onCreate() {
         super.onCreate();
         songPos = 0;
         rand = new Random();
+        notVisibleLayouts = new ArrayList<>();
         player = new MediaPlayer();
         initMusicPlayer();
     }
@@ -59,11 +62,12 @@ public class MusicService extends Service implements
         player.setOnErrorListener(this);
     }
 
-    public void setList(ArrayList<Song> songs, RecyclerView mainListMusic, SongAdapter adapter) {
+    public void setList(ArrayList<Song> songs, RecyclerView mainListMusic, SongAdapter adapter, RecyclerView.LayoutManager layoutManager) {
         this.songs = songs;
         this.mainListMusic = mainListMusic;
         this.adapter = adapter;
         oldSong = 0;
+        this.layoutManager = layoutManager;
     }
 
     public class MusicBinder extends Binder {
@@ -83,20 +87,41 @@ public class MusicService extends Service implements
             LinearLayout theView = songs.get(songPos).getTheView();
             LinearLayout theOldView = songs.get(oldSong).getTheView();
             Log.d("debug", playSong.toString());
+            Log.d("debug", String.format("OldSongPos: %d", oldSong));
+
             //getting rid of old color
-            if (theOldView != null && theOldView.getParent() != null) {
-                RecyclerView recyclerView = (RecyclerView) theOldView.getParent();
-                songs.get(recyclerView.getChildAdapterPosition(theOldView)).setHasColor(false);
-                adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(theOldView));
-                Log.d("debug", String.format("OldAdapterPos: %d",recyclerView.getChildAdapterPosition(theOldView)));
+            if (theOldView  != null)
+                notVisibleLayouts.add(theOldView);
+            for (int i = 0; i < notVisibleLayouts.size(); i++) {
+                if (notVisibleLayouts.get(i).getParent() != null) {
+                    /*
+                    RecyclerView recyclerView = (RecyclerView) notVisibleLayouts.get(i).getParent();
+                    songs.get(recyclerView.getChildAdapterPosition(notVisibleLayouts.get(i))).setHasColor(false);
+                    adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(notVisibleLayouts.get(i)));
+                    Log.d("debug", String.format("OldAdapterPos: %d", recyclerView.getChildAdapterPosition(notVisibleLayouts.get(i))));
+                    notVisibleLayouts.remove(i);
+                    */
+                    RecyclerView recyclerView = (RecyclerView) notVisibleLayouts.get(i).getParent();
+                    songs.get(oldSong).setHasColor(false);
+                    adapter.notifyItemChanged(oldSong);
+                    Log.d("debug", String.format("OldAdapterPos: %d", oldSong));
+                    notVisibleLayouts.remove(i);
+                }
             }
+
             //adding new color
             if (theView != null&& theView.getParent() != null) {
                 RecyclerView recyclerView = (RecyclerView) theView.getParent();
+                /*
                 songs.get(recyclerView.getChildAdapterPosition(theView)).setHasColor(true);
                 adapter.notifyItemChanged(recyclerView.getChildAdapterPosition(theView));
                 oldSong = recyclerView.getChildAdapterPosition(theView);
                 Log.d("debug", String.format("NewAdapterPos: %d",recyclerView.getChildAdapterPosition(theView)));
+                */
+                songs.get(songPos).setHasColor(true);
+                adapter.notifyItemChanged(songPos);
+                oldSong = songPos;
+                Log.d("debug", String.format("NewAdapterPos: %d",songPos));
             }
         } catch (IOException e) {
             e.printStackTrace();
