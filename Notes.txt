@@ -9,7 +9,7 @@ Stuff to Do!
 		-Deleting
 		-Renaming
 		-Moving
-    Load all songs from folder
+    Notification that goes away    
 	Play buttons that stick at the bottom
 	Art
 	For the car

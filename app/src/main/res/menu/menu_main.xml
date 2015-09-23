@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item
         android:id="@+id/action_shuffle"
-        android:icon="@drawable/ic_shuffle_black_24dp"
+        android:icon="@drawable/ic_shuffle_24dp"
         android:title="@string/action_shuffle"
         android:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_repeat"
-        android:icon="@drawable/ic_repeat_black_24dp"
+        android:icon="@drawable/ic_repeat_24dp"
         android:title="@string/action_repeat"
         android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_settings" android:title="@string/action_settings"

@@ -197,7 +197,7 @@ public class MusicService extends Service implements
         Notification.Builder builder = new Notification.Builder(this);
 
         builder.setContentIntent(pendInt)
-                .setSmallIcon(R.drawable.ic_play_arrow_black_24dp)
+                .setSmallIcon(R.drawable.ic_play_arrow_24dp)
                 .setTicker(songTitle)
                 .setOngoing(true)
                 .setContentTitle("Playing")
