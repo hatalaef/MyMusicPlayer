@@ -82,8 +82,7 @@ public class MusicService extends Service implements
             player.setDataSource(getApplicationContext(), trackUri);
             LinearLayout theView = songs.get(songPos).getTheView();
             LinearLayout theOldView = songs.get(oldSong).getTheView();
-            Log.d("debug", String.format("Title: %s, Artist: %s, Uri: %s, Pos: %s",
-                    songTitle, playSong.getArtist(), trackUri, songPos));
+            Log.d("debug", playSong.toString());
             //getting rid of old color
             if (theOldView != null && theOldView.getParent() != null) {
                 RecyclerView recyclerView = (RecyclerView) theOldView.getParent();

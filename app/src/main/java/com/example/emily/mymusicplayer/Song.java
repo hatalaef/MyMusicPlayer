@@ -44,6 +44,11 @@ public class Song {
         this.theView = theView;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Song - Id: %d, Title: %s, Artist: %s, HasColor: %b, LayoutId: %d", id, title, artist, hasColor, theView.getId());
+    }
+
 }
 
 
