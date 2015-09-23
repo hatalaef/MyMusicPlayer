@@ -18,3 +18,4 @@ Stuff to Do!
     
 Notes
     Changed adapter view to SongPos. If I'm careful about updating the adapter when the View changes, I think it should work?
+    Sometimes a view offscreen keeps its highlight, but rarely.

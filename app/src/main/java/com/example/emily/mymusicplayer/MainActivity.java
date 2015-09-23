@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends Activity implements MediaPlayerControl {
 
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+    public static final String DEBUG_TAG = "MyMusicPlayerDebug";
 
     private RecyclerView mainListMusic;
     private SongAdapter adapter;
