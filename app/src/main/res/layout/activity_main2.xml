@@ -11,13 +11,6 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"/>
-
-    <fragment android:name="com.example.emily.mymusicplayer.MusicControls"
-        android:id="@+id/contolrs"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:layout="@layout/fragment_music_controls" />
+        android:layout_weight="6"/>
 
 </LinearLayout>
