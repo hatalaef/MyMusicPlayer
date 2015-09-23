@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends Activity implements MediaPlayerControl {
 
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+    public static final String FOLDER_PATH = "MyMusic/MyMusic";
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
 
     private RecyclerView mainListMusic;
@@ -167,7 +168,10 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     public void getSongList() {
         ContentResolver musicResolver = getContentResolver();
         Uri musicUri = STORAGE_LOCATION;
-        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+        String folderPath = "%" + FOLDER_PATH + "%";
+        //gets music from certain folder
+        Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.DATA + " like ? ",
+                new String[] {folderPath}, null);
 
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //get columns
