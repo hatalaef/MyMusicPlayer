@@ -1,6 +1,5 @@
 package com.example.emily.mymusicplayer;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,18 +10,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.MediaController.MediaPlayerControl;
 
 import com.example.emily.mymusicplayer.MusicService.MusicBinder;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity implements MediaPlayerControl {
+public class MainActivity extends FragmentActivity implements MusicControls.OnFragmentInteractionListener {
 
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
     public static final String FOLDER_PATH = "MyMusic/MyMusic";
@@ -32,7 +31,8 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     private SongAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private MusicController controller;
+    MusicControls musicControls;
+
     private ArrayList<Song> songList;
     private MusicService musicService;
     private Intent playIntent;
@@ -44,6 +44,9 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+       //musicControls = (MusicControls) getFragmentManager().findFragmentById(R.id.controlsFragment);
+        //musicControls.onAttach(getApplicationContext());
 
         mainListMusic = (RecyclerView) findViewById(R.id.mainListMusic);
 
@@ -57,16 +60,6 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
         adapter = new SongAdapter(this, songList);
         mainListMusic.setAdapter(adapter);
-        setController();
-
-        //waits for mainListMusic to draw
-        //mainListMusic.post(new Runnable() {
-        //    @Override
-        //    public void run() {
-        //   }
-        //});
-
-
 
         adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             //changes color
@@ -110,14 +103,13 @@ public class MainActivity extends Activity implements MediaPlayerControl {
     protected void onResume() {
         super.onResume();
         if (paused) {
-            setController();
+
             paused = false;
         }
     }
 
     @Override
     protected void onStop() {
-        controller.hide();
         super.onStop();
     }
 
@@ -199,115 +191,29 @@ public class MainActivity extends Activity implements MediaPlayerControl {
         musicService.setSong(i);
         musicService.playSong();
         if (playbackPaused) {
-            setController();
             playbackPaused = false;
         }
-        controller.show(0);
     }
 
-    private void setController() {
-        controller = new MusicController(this);
-
-        controller.setPrevNextListeners(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playNext();
-            }
-        }, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playPrev();
-            }
-        });
-
-        controller.setMediaPlayer(this);
-        controller.setAnchorView(findViewById(R.id.mainListMusic));
-        controller.setEnabled(true);
+    private void setController2() {
     }
 
     private void playNext() {
         musicService.playNext();
         if (playbackPaused) {
-            controller.show();
             playbackPaused = false;
         }
-        controller.show(0);
     }
 
     private void playPrev() {
         musicService.playPrev();
         if (playbackPaused) {
-            controller.show();
             playbackPaused = false;
         }
-        controller.show(0);
     }
 
     @Override
-    public void start() {
-        musicService.go();
-    }
-
-    @Override
-    public void pause() {
-        playbackPaused = true;
-        musicService.pausePlayer();
-    }
-
-    @Override
-    public int getDuration() {
-        if(musicService != null && musicBound && musicService.isPlaying()) {
-            return musicService.getPos();
-        }
-        else
-            return 0;
-    }
-
-    @Override
-    public int getCurrentPosition() {
-        if(musicService != null && musicBound && musicService.isPlaying()) {
-            return musicService.getPos();
-        }
-        else
-            return 0;
-    }
-
-    @Override
-    public void seekTo(int pos) {
-        musicService.seek(pos);
-    }
-
-    @Override
-    public boolean isPlaying() {
-        if(musicService != null && musicBound) {
-            return musicService.isPlaying();
-        }
-        else
-            return false;
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    @Override
-    public boolean canPause() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekForward() {
-        return true;
-    }
-
-    @Override
-    public int getAudioSessionId() {
-        return 0;
+    public void onPlayClicked() {
+        playbackPaused = !playbackPaused;
     }
 }

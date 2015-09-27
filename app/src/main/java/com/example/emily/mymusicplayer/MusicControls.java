@@ -1,9 +1,8 @@
 package com.example.emily.mymusicplayer;
 
-import android.app.Fragment;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 
-public class MusicControls extends Fragment implements MediaPlayer {
+public class MusicControls extends Fragment {
 
     private ImageView imgPrev;
     private ImageView imgRew;
@@ -76,8 +75,7 @@ public class MusicControls extends Fragment implements MediaPlayer {
         imgPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                mListener.onPlayClicked();
             }
         });
 
@@ -93,7 +91,25 @@ public class MusicControls extends Fragment implements MediaPlayer {
     }
 
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+        void onPlayClicked();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (OnFragmentInteractionListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
 }

@@ -59,15 +59,6 @@ public class MainActivity2 extends Activity implements MediaPlayerControl {
         mainListMusic.setAdapter(adapter);
         setController();
 
-        //waits for mainListMusic to draw
-        //mainListMusic.post(new Runnable() {
-        //    @Override
-        //    public void run() {
-        //   }
-        //});
-
-
-
         adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             //changes color
             @Override
@@ -176,11 +167,11 @@ public class MainActivity2 extends Activity implements MediaPlayerControl {
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //get columns
             int titleColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.TITLE);
+                    (android.provider.MediaStore.Audio.Media.TITLE);
             int idColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media._ID);
+                    (android.provider.MediaStore.Audio.Media._ID);
             int artistColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.ARTIST);
+                    (android.provider.MediaStore.Audio.Media.ARTIST);
             //add songs to list
             do {
                 long thisId = musicCursor.getLong(idColumn);
