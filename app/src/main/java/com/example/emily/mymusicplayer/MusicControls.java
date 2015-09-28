@@ -62,7 +62,7 @@ public class MusicControls extends Fragment {
         imgPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mListener.onPrevClicked();
 
             }
         });
@@ -70,7 +70,7 @@ public class MusicControls extends Fragment {
         imgRew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mListener.onRewindClicked();
 
             }
         });
@@ -85,7 +85,15 @@ public class MusicControls extends Fragment {
         imgFor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mListener.onForwardClicked();
 
+            }
+        });
+
+        imgNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onNextClicked();
 
             }
         });
@@ -102,8 +110,17 @@ public class MusicControls extends Fragment {
         }
     }
 
+    public void setSongInfo(String title, String artist) {
+        navSongName.setText(title);
+        navSongArtist.setText(artist);
+    }
+
     public interface OnFragmentInteractionListener {
         void onPlayClicked();
+        void onNextClicked();
+        void onPrevClicked();
+        void onForwardClicked();
+        void onRewindClicked();
     }
 
     @Override

@@ -215,12 +215,32 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     public void onPlayClicked() {
         if (playbackPaused) {
             playbackPaused = false;
-            musicService.playSong();
+            musicService.startPlayer();
         }
         else {
             playbackPaused = true;
             musicService.pausePlayer();
         }
 
+    }
+
+    @Override
+    public void onNextClicked() {
+        musicService.playNext();
+    }
+
+    @Override
+    public void onPrevClicked() {
+        musicService.playPrev();
+    }
+
+    @Override
+    public void onForwardClicked() {
+        //musicService.
+    }
+
+    @Override
+    public void onRewindClicked() {
+       // musicService.playNext();
     }
 }

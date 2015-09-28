@@ -9,8 +9,7 @@ Stuff to Do!
 		-Deleting
 		-Renaming
 		-Moving
-    Notification that goes away    
-	Play buttons that stick at the bottom
+    Notification that goes away
 	Art
 	For the car
 
@@ -18,4 +17,4 @@ Stuff to Do!
     
 Notes
     Changed adapter view to SongPos. If I'm careful about updating the adapter when the View changes, I think it should work?
-    Sometimes there is an IllegalStateException, which seems to mean the Media Player isn't in the right state.
+    Sometimes there is an IllegalStateException, which seems to mean the Media Player isn't in the right state. (Maybe fixed)

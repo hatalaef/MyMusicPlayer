@@ -79,28 +79,27 @@ public class MusicService extends Service implements
         Uri trackUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, currSong);
 
         try {
-            player.setDataSource(getApplicationContext(), trackUri);
-
             Log.d(MainActivity.DEBUG_TAG, playSong.toString());
+            player.setDataSource(getApplicationContext(), trackUri);
+            player.prepareAsync();
 
             //getting rid of old color
             songs.get(oldSong).setHasColor(false);
             adapter.notifyItemChanged(oldSong);
             Log.d(MainActivity.DEBUG_TAG, String.format("OldSongPos: %d", oldSong));
 
-            //adding new color
+             //adding new color
             songs.get(songPos).setHasColor(true);
             adapter.notifyItemChanged(songPos);
             oldSong = songPos;
             Log.d(MainActivity.DEBUG_TAG, String.format("NewSongPos: %d", songPos));
-
+            
+            musicControls.updatePlayButton(false);
+            musicControls.setSongInfo(songTitle, playSong.getArtist());
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            //Todo - Doesn't show the right information
         }
-        player.prepareAsync();
-        musicControls.updatePlayButton(false);
     }
 
     public void playPrev() {
@@ -151,6 +150,11 @@ public class MusicService extends Service implements
     public void pausePlayer(){
         player.pause();
         musicControls.updatePlayButton(true);
+    }
+
+    public void startPlayer() {
+        player.start();
+        musicControls.updatePlayButton(false);
     }
 
     public void seek(int pos){
