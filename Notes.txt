@@ -10,7 +10,7 @@ Stuff to Do!
 		-Renaming
 		-Moving
     Notification that goes away
-	Art
+	Album Art
 	For the car
 
     Computer syncing

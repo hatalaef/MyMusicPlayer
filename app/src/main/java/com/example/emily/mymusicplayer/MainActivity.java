@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -28,6 +29,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
 
     private MusicControls musicControls;
+
+    private Handler seekHandler = new Handler();
 
     private RecyclerView mainListMusic;
     private SongAdapter adapter;
@@ -111,6 +114,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     protected void onStop() {
         super.onStop();
     }
+
+
 
     private ServiceConnection musicConnection = new ServiceConnection(){
 
@@ -211,11 +216,13 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         }
     }
 
+
+
     @Override
     public void onPlayClicked() {
         if (playbackPaused) {
             playbackPaused = false;
-            musicService.startPlayer();
+            musicService.go();
         }
         else {
             playbackPaused = true;
@@ -242,5 +249,10 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     @Override
     public void onRewindClicked() {
        // musicService.playNext();
+    }
+
+    @Override
+    public void onSeekBarChanged(int progress) {
+        musicService.seek(progress);
     }
 }

@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 public class MusicControls extends Fragment {
 
-    private final int playResource = R.drawable.ic_play_arrow_24dp;
-    private final int pauseResource = R.drawable.ic_pause_24dp;
+    public static final int PLAY_RESOURCE = R.drawable.ic_play_arrow_24dp;
+    public static final int PAUSE_RESOURCE = R.drawable.ic_pause_24dp;
 
     private ImageView imgPrev;
     private ImageView imgRew;
@@ -98,15 +98,33 @@ public class MusicControls extends Fragment {
             }
         });
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mListener.onSeekBarChanged(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
         return view;
     }
 
     public void updatePlayButton(boolean changeToPause) {
         if (changeToPause) {
-            imgPlay.setImageDrawable(getResources().getDrawable(playResource, null));
+            imgPlay.setImageDrawable(getResources().getDrawable(PLAY_RESOURCE, null));
         }
         else {
-            imgPlay.setImageDrawable(getResources().getDrawable(pauseResource, null));
+            imgPlay.setImageDrawable(getResources().getDrawable(PAUSE_RESOURCE, null));
         }
     }
 
@@ -115,12 +133,24 @@ public class MusicControls extends Fragment {
         navSongArtist.setText(artist);
     }
 
+    public void setSeekBarMax(int max) {
+        seekBar.setMax(max);
+    }
+
+    public void setSeekBarPos(int pos) {
+        seekBar.setProgress(pos);
+    }
+
+
+
+
     public interface OnFragmentInteractionListener {
         void onPlayClicked();
         void onNextClicked();
         void onPrevClicked();
         void onForwardClicked();
         void onRewindClicked();
+        void onSeekBarChanged(int progress);
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
@@ -22,6 +23,10 @@ public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     private static final int NOTIFY_ID = 1;
+    private static final int SEEKBAR_TIME = 1000;
+
+    private Handler seekHandler = new Handler();
+    private Runnable runnable;
 
     private MusicControls musicControls;
     private MediaPlayer player;
@@ -29,6 +34,7 @@ public class MusicService extends Service implements
     private int songPos;
     private final IBinder musicBind = new MusicBinder();
     private String songTitle = "";
+    private String songArtist = "";
     private boolean isShuffle = false;
     private Random rand;
     private SongAdapter adapter;
@@ -75,6 +81,7 @@ public class MusicService extends Service implements
         player.reset();
         Song playSong = songs.get(songPos);
         songTitle = playSong.getTitle();
+        songArtist = playSong.getArtist();
         long currSong = playSong.getId();
         Uri trackUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, currSong);
 
@@ -93,12 +100,10 @@ public class MusicService extends Service implements
             adapter.notifyItemChanged(songPos);
             oldSong = songPos;
             Log.d(MainActivity.DEBUG_TAG, String.format("NewSongPos: %d", songPos));
-            
-            musicControls.updatePlayButton(false);
-            musicControls.setSongInfo(songTitle, playSong.getArtist());
+
         } catch (IOException e) {
             e.printStackTrace();
-            //Todo - Doesn't show the right information
+            //Todo - Doesn't show the right information on exception
         }
     }
 
@@ -149,12 +154,10 @@ public class MusicService extends Service implements
 
     public void pausePlayer(){
         player.pause();
+        if(runnable != null) {
+            seekHandler.removeCallbacks(runnable);
+        }
         musicControls.updatePlayButton(true);
-    }
-
-    public void startPlayer() {
-        player.start();
-        musicControls.updatePlayButton(false);
     }
 
     public void seek(int pos){
@@ -163,7 +166,21 @@ public class MusicService extends Service implements
 
     public void go(){
         player.start();
+        musicControls.updatePlayButton(false);
     }
+
+    public void seekBarTimer() {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                musicControls.setSeekBarPos(getPos());
+                seekHandler.postDelayed(this, SEEKBAR_TIME);
+            }
+        };
+        seekHandler.postDelayed(runnable, SEEKBAR_TIME);
+    }
+
 
     @Nullable
     @Override
@@ -197,16 +214,24 @@ public class MusicService extends Service implements
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+
+        musicControls.updatePlayButton(false);
+        musicControls.setSongInfo(songTitle, songArtist);
+        musicControls.setSeekBarMax(getDur());
+        musicControls.setSeekBarPos(getPos());
+
         mp.start();
         //mp.setOnCompletionListener(new onCompletionListener());
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        seekBarTimer();
+
         Notification.Builder builder = new Notification.Builder(this);
 
         builder.setContentIntent(pendInt)
-                .setSmallIcon(R.drawable.ic_play_arrow_24dp)
+                .setSmallIcon(MusicControls.PLAY_RESOURCE)
                 .setTicker(songTitle)
                 .setOngoing(true)
                 .setContentTitle("Playing")
