@@ -27,6 +27,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     public static final String FOLDER_PATH = "MyMusic";
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
 
+    private MusicControls musicControls;
+
     private RecyclerView mainListMusic;
     private SongAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -42,6 +44,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        musicControls = (MusicControls) getSupportFragmentManager().findFragmentById(R.id.controlsFragment);
 
         mainListMusic = (RecyclerView) findViewById(R.id.mainListMusic);
 
@@ -116,7 +120,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
             //get service
             musicService = binder.getService();
             //pass list
-            musicService.setList(songList, adapter);
+            musicService.setList(songList, adapter, musicControls);
             musicBound = true;
         }
 

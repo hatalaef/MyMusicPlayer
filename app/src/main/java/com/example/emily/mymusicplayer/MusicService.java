@@ -22,6 +22,8 @@ public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     private static final int NOTIFY_ID = 1;
+
+    private MusicControls musicControls;
     private MediaPlayer player;
     private ArrayList<Song> songs;
     private int songPos;
@@ -56,9 +58,10 @@ public class MusicService extends Service implements
         player.setOnErrorListener(this);
     }
 
-    public void setList(ArrayList<Song> songs,SongAdapter adapter) {
+    public void setList(ArrayList<Song> songs,SongAdapter adapter, MusicControls musicControls) {
         this.songs = songs;
         this.adapter = adapter;
+        this.musicControls = musicControls;
         oldSong = 0;
     }
 
@@ -97,6 +100,7 @@ public class MusicService extends Service implements
             e.printStackTrace();
         }
         player.prepareAsync();
+        musicControls.updatePlayButton(false);
     }
 
     public void playPrev() {
@@ -146,6 +150,7 @@ public class MusicService extends Service implements
 
     public void pausePlayer(){
         player.pause();
+        musicControls.updatePlayButton(true);
     }
 
     public void seek(int pos){

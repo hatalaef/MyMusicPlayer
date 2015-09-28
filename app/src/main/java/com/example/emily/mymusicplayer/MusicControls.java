@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 public class MusicControls extends Fragment {
 
+    private final int playResource = R.drawable.ic_play_arrow_24dp;
+    private final int pauseResource = R.drawable.ic_pause_24dp;
+
     private ImageView imgPrev;
     private ImageView imgRew;
     private ImageView imgPlay;
@@ -88,6 +91,15 @@ public class MusicControls extends Fragment {
         });
 
         return view;
+    }
+
+    public void updatePlayButton(boolean changeToPause) {
+        if (changeToPause) {
+            imgPlay.setImageDrawable(getResources().getDrawable(playResource, null));
+        }
+        else {
+            imgPlay.setImageDrawable(getResources().getDrawable(pauseResource, null));
+        }
     }
 
     public interface OnFragmentInteractionListener {

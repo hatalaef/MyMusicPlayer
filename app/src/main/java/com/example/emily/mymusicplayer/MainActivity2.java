@@ -120,7 +120,7 @@ public class MainActivity2 extends Activity implements MediaPlayerControl {
             //get service
             musicService = binder.getService();
             //pass list
-            musicService.setList(songList, adapter);
+            musicService.setList(songList, adapter, new MusicControls());
             musicBound = true;
         }
 
