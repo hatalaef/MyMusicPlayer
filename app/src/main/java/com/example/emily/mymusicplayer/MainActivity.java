@@ -31,8 +31,6 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     private SongAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    MusicControls musicControls;
-
     private ArrayList<Song> songList;
     private MusicService musicService;
     private Intent playIntent;
@@ -44,9 +42,6 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-       //musicControls = (MusicControls) getFragmentManager().findFragmentById(R.id.controlsFragment);
-        //musicControls.onAttach(getApplicationContext());
 
         mainListMusic = (RecyclerView) findViewById(R.id.mainListMusic);
 
@@ -215,5 +210,6 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     @Override
     public void onPlayClicked() {
         playbackPaused = !playbackPaused;
+        musicService.pausePlayer();
     }
 }
