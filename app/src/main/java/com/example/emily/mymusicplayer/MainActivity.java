@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class MainActivity extends FragmentActivity implements MusicControls.OnFragmentInteractionListener {
 
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-    public static final String FOLDER_PATH = "MyMusic/MyMusic";
+    public static final String FOLDER_PATH = "MyMusic";
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
 
     private RecyclerView mainListMusic;
@@ -209,7 +209,14 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     @Override
     public void onPlayClicked() {
-        playbackPaused = !playbackPaused;
-        musicService.pausePlayer();
+        if (playbackPaused) {
+            playbackPaused = false;
+            musicService.playSong();
+        }
+        else {
+            playbackPaused = true;
+            musicService.pausePlayer();
+        }
+
     }
 }
