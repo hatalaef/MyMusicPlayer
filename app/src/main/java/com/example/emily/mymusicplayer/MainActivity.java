@@ -243,12 +243,14 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     @Override
     public void onForwardClicked() {
-        //musicService.
+        if (musicService.getPos() + MusicControls.REW_MILLES < musicService.getDur())
+            musicService.seek(musicService.getPos() + MusicControls.REW_MILLES);
     }
 
     @Override
     public void onRewindClicked() {
-       // musicService.playNext();
+        if (musicService.getPos() + MusicControls.REW_MILLES < musicService.getDur())
+            musicService.seek(musicService.getPos() + MusicControls.REW_MILLES);
     }
 
     @Override
