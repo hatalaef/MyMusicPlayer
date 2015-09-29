@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +18,8 @@ public class MusicControls extends Fragment {
 
     public static final int PLAY_RESOURCE = R.drawable.ic_play_arrow_24dp;
     public static final int PAUSE_RESOURCE = R.drawable.ic_pause_24dp;
-    public static final int REW_MILLES = 1500;
+    public static final int REW_FWD_HANDLER_TIME = 100;
+    public static final int REW_MILLES = 250;
 
     private ImageView imgPrev;
     private ImageView imgRew;
@@ -27,7 +29,7 @@ public class MusicControls extends Fragment {
     private SeekBar seekBar;
     private TextView navSongName;
     private TextView navSongArtist;
-    private Handler handler;
+    private Handler handler = new Handler();
     private Runnable rewRunnable;
     private Runnable forRunnable;
 
@@ -78,18 +80,13 @@ public class MusicControls extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    rewRunnable = new Runnable() {
-
-                        @Override
-                        public void run() {
-                            mListener.onRewindClicked();
-                            handler.postDelayed(this, REW_MILLES);
-                        }
-                    };
+                    revRunnable();
                 }
-                else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (rewRunnable != null)
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (rewRunnable != null) {
                         handler.removeCallbacks(rewRunnable);
+                    Log.d(MainActivity.DEBUG_TAG, "Rewind handler stopped");
+                }
                 }
 
                 return true;
@@ -101,10 +98,16 @@ public class MusicControls extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    do {
-                        mListener.onRewindClicked();
-                    }while (event.getAction() != MotionEvent.ACTION_UP);
+                    forRunnable();
                 }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (forRunnable != null) {
+                        handler.removeCallbacks(forRunnable);
+                        Log.d(MainActivity.DEBUG_TAG, "Forward handler stopped");
+
+                    }
+                }
+
                 return true;
             }
 
@@ -148,6 +151,33 @@ public class MusicControls extends Fragment {
         });
 
         return view;
+    }
+
+    //for rewind/forward, advances music every so often
+    public void revRunnable() {
+
+        rewRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                mListener.onRewindClicked();
+                handler.postDelayed(this, REW_FWD_HANDLER_TIME);
+            }
+        };
+        handler.postDelayed(rewRunnable, REW_FWD_HANDLER_TIME);
+    }
+
+    public void forRunnable() {
+
+        forRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                mListener.onForwardClicked();
+                handler.postDelayed(this, REW_FWD_HANDLER_TIME);
+            }
+        };
+        handler.postDelayed(forRunnable, REW_FWD_HANDLER_TIME);
     }
 
     public void updatePlayButton(boolean changeToPause) {

@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -243,18 +244,26 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     @Override
     public void onForwardClicked() {
-        if (musicService.getPos() - MusicControls.REW_MILLES * 3 > 0)
+        if (musicService.getPos() - MusicControls.REW_MILLES * 3 > 0) {
             musicService.seek(musicService.getPos() + MusicControls.REW_MILLES * 3);
-        else
+            Log.d(DEBUG_TAG, String.format("ForwardClicked - getPost: %d, timeForward: %d", musicService.getPos(),  MusicControls.REW_MILLES * 3));
+        }
+        else {
             musicService.seek(0);
+            Log.d(DEBUG_TAG, "ForwardClicked - sent to 0");
+        }
     }
 
     @Override
     public void onRewindClicked() {
-        if (musicService.getPos() - MusicControls.REW_MILLES * 3 < musicService.getDur())
-            musicService.seek(musicService.getPos() + MusicControls.REW_MILLES * 3);
-        else
+        if (musicService.getPos() - MusicControls.REW_MILLES * 3 < musicService.getDur()) {
+            musicService.seek(musicService.getPos() - MusicControls.REW_MILLES * 3);
+            Log.d(DEBUG_TAG, String.format("RewindClicked - getPost: %d, timeRev: %d", musicService.getPos(), MusicControls.REW_MILLES * 3));
+        }
+        else {
             musicService.seek(musicService.getDur());
+            Log.d(DEBUG_TAG, "ForwardClicked - sent to 0");
+        }
     }
 
     @Override
