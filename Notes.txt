@@ -10,6 +10,7 @@ Stuff to Do!
 		-Renaming
 		-Moving
     Notification that goes away
+        -or, notification that has actions on it
 	Album Art
 	For the car
 

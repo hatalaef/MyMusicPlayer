@@ -1,9 +1,11 @@
 package com.example.emily.mymusicplayer;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -13,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -167,15 +170,20 @@ public class MusicService extends Service implements
     public void go(){
         player.start();
         musicControls.updatePlayButton(false);
+        seekBarTimer();
     }
 
     public void seekBarTimer() {
-        Runnable runnable = new Runnable() {
+        runnable = new Runnable() {
 
             @Override
             public void run() {
-                musicControls.setSeekBarPos(getPos());
-                seekHandler.postDelayed(this, SEEKBAR_TIME);
+                if (player.isPlaying()) {
+                    musicControls.setSeekBarPos(getPos());
+                    seekHandler.postDelayed(this, SEEKBAR_TIME);
+                }
+                else
+                    seekHandler.removeCallbacks(this);
             }
         };
         seekHandler.postDelayed(runnable, SEEKBAR_TIME);
@@ -222,22 +230,32 @@ public class MusicService extends Service implements
 
         mp.start();
         //mp.setOnCompletionListener(new onCompletionListener());
+        seekBarTimer();
+
+        NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
-        seekBarTimer();
-
-        Notification.Builder builder = new Notification.Builder(this);
+        /*
+        Intent notPauseIntent = new Intent();
+        notPauseIntent.setAction("PAUSE");
+        PendingIntent pendIntPause = PendingIntent.getActivity(this, 0, notPauseIntent, 0);
+        NotificationCompat.Action pauseAction = new NotificationCompat.Action.Builder(MusicControls.PLAY_RESOURCE, "Pause", pendIntPause).build();
+        */
 
         builder.setContentIntent(pendInt)
-                .setSmallIcon(MusicControls.PLAY_RESOURCE)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker(songTitle)
-                .setOngoing(true)
                 .setContentTitle("Playing")
                 .setContentText(songTitle);
         Notification notif = builder.build();
 
         startForeground(NOTIFY_ID, notif);
+
+
+
     }
 }
