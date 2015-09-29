@@ -200,9 +200,6 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         }
     }
 
-    private void setController2() {
-    }
-
     private void playNext() {
         musicService.playNext();
         if (playbackPaused) {
@@ -244,30 +241,33 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     @Override
     public void onForwardClicked() {
-        if (musicService.getPos() - MusicControls.REW_MILLES * 3 > 0) {
+        if (musicService.getPos() - MusicControls.REW_MILLES * 3 < musicService.getDur()) {
             musicService.seek(musicService.getPos() + MusicControls.REW_MILLES * 3);
-            Log.d(DEBUG_TAG, String.format("ForwardClicked - getPost: %d, timeForward: %d", musicService.getPos(),  MusicControls.REW_MILLES * 3));
+            Log.d(DEBUG_TAG, String.format("ForwardClicked - getPos: %d, timeForward: %d", musicService.getPos(),  MusicControls.REW_MILLES * 3));
         }
         else {
-            musicService.seek(0);
-            Log.d(DEBUG_TAG, "ForwardClicked - sent to 0");
+            musicService.seek(musicService.getDur());
+            Log.d(DEBUG_TAG, String.format("ForwardClicked - sent to %d", musicService.getDur()));
         }
+        musicControls.setSongPos(musicService.getPos());
     }
 
     @Override
     public void onRewindClicked() {
-        if (musicService.getPos() - MusicControls.REW_MILLES * 3 < musicService.getDur()) {
+        if (musicService.getPos() - MusicControls.REW_MILLES * 3 > 0) {
             musicService.seek(musicService.getPos() - MusicControls.REW_MILLES * 3);
-            Log.d(DEBUG_TAG, String.format("RewindClicked - getPost: %d, timeRev: %d", musicService.getPos(), MusicControls.REW_MILLES * 3));
+            Log.d(DEBUG_TAG, String.format("RewindClicked - getPos: %d, timeRev: %d", musicService.getPos(), MusicControls.REW_MILLES * 3));
         }
         else {
-            musicService.seek(musicService.getDur());
-            Log.d(DEBUG_TAG, "ForwardClicked - sent to 0");
+            musicService.seek(0);
+            Log.d(DEBUG_TAG, "RewindClicked - sent to 0");
         }
+        musicControls.setSongPos(musicService.getPos());
     }
 
     @Override
     public void onSeekBarChanged(int progress) {
         musicService.seek(progress);
+        musicControls.setSongPos(musicService.getPos());
     }
 }

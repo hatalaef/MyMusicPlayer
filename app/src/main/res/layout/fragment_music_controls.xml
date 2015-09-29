@@ -99,22 +99,25 @@
         android:thumbTint="@color/accent"
         android:background="@color/navigation" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/navSongPos"
-            android:layout_gravity="left" />
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/navSongDur"
-            android:layout_gravity="right" />
-    </LinearLayout>
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
 
 </LinearLayout>

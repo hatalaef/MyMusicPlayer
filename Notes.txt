@@ -18,3 +18,4 @@ Stuff to Do!
 Notes
     Changed adapter view to SongPos. If I'm careful about updating the adapter when the View changes, I think it should work?
     Sometimes there is an IllegalStateException, which seems to mean the Media Player isn't in the right state. (Maybe fixed)
+    Not that much of a problem, but OnCompletion Listener is called hitting play right away, which means the second song plays.
