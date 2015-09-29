@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,6 +19,9 @@ public class MusicControls extends Fragment {
 
     public static final int PLAY_RESOURCE = R.drawable.ic_play_arrow_24dp;
     public static final int PAUSE_RESOURCE = R.drawable.ic_pause_24dp;
+    public static final int SHUFFLE_OFF_COLOR = R.color.navigationBackground;
+    public static final int SHUFFLE_ON_COLOR = R.color.shuffleOn;
+
     public static final int REW_FWD_HANDLER_TIME = 100;
     public static final int REW_MILLES = 250;
 
@@ -31,6 +35,9 @@ public class MusicControls extends Fragment {
     private TextView navSongArtist;
     private TextView navSongPos;
     private TextView navSongDur;
+    private ImageView imgShuffle;
+    private ImageView imgRepeat;
+
     private Handler handler = new Handler();
     private Runnable rewRunnable;
     private Runnable forRunnable;
@@ -70,6 +77,8 @@ public class MusicControls extends Fragment {
         navSongArtist = (TextView)view.findViewById(R.id.navSongArtist);
         navSongPos = (TextView)view.findViewById(R.id.navSongPos);
         navSongDur = (TextView)view.findViewById(R.id.navSongDur);
+        imgShuffle = (ImageView)view.findViewById(R.id.imgShuffle);
+        imgRepeat = (ImageView)view.findViewById(R.id.imgRepeat);
 
         imgPrev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +98,8 @@ public class MusicControls extends Fragment {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (rewRunnable != null) {
                         handler.removeCallbacks(rewRunnable);
-                    Log.d(MainActivity.DEBUG_TAG, "Rewind handler stopped");
-                }
+                        Log.d(MainActivity.DEBUG_TAG, "Rewind handler stopped");
+                    }
                 }
 
                 return true;
@@ -154,6 +163,22 @@ public class MusicControls extends Fragment {
             }
         });
 
+        imgShuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onShuffleClicked();
+
+            }
+        });
+
+        imgRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onRepeatClicked();
+
+            }
+        });
+
         return view;
     }
 
@@ -190,6 +215,24 @@ public class MusicControls extends Fragment {
         }
         else {
             imgPlay.setImageDrawable(getResources().getDrawable(PAUSE_RESOURCE, null));
+        }
+    }
+
+    public void updateShuffleButton(boolean changeToShuffled) {
+        if (changeToShuffled) {
+            imgShuffle.setBackgroundColor((ContextCompat.getColor(getActivity(), SHUFFLE_ON_COLOR)));
+        }
+        else {
+            imgShuffle.setBackgroundColor((ContextCompat.getColor(getActivity(), SHUFFLE_OFF_COLOR)));
+        }
+    }
+
+    public void updateRepeatButton(boolean changeToRepeat) {
+        if (changeToRepeat) {
+            imgRepeat.setBackgroundColor((ContextCompat.getColor(getActivity(), SHUFFLE_ON_COLOR)));
+        }
+        else {
+            imgRepeat.setBackgroundColor((ContextCompat.getColor(getActivity(), SHUFFLE_OFF_COLOR)));
         }
     }
 
@@ -243,6 +286,8 @@ public class MusicControls extends Fragment {
         void onForwardClicked();
         void onRewindClicked();
         void onSeekBarChanged(int progress);
+        void onShuffleClicked();
+        void onRepeatClicked();
     }
 
     @Override

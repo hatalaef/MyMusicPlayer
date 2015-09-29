@@ -113,11 +113,35 @@
             android:id="@+id/navSongPos"
             android:layout_alignParentLeft="true" />
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgShuffle"
+                android:src="@drawable/ic_shuffle_24dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgRepeat"
+                android:src="@drawable/ic_repeat_24dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/navSongDur"
             android:layout_alignParentRight="true" />
+
     </RelativeLayout>
 
 </LinearLayout>

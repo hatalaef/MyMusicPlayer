@@ -7,6 +7,7 @@
     <color name="fallback1">#ea80fc</color>
     <color name="fallback2">#aa00ff</color>
     <color name="songRow">#2b2b2b</color>
+    <color name="shuffleOn">#555555</color>
 
     <color name="navigation">#ea80fc</color>
     <color name="navigationBackground">#1b1b1b</color>

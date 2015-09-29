@@ -17,6 +17,7 @@ import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class MusicService extends Service implements
     private String songTitle = "";
     private String songArtist = "";
     private boolean isShuffle = false;
+    private boolean isRepeat = false;
+    private boolean playAfterPrepare = true;
     private Random rand;
     private SongAdapter adapter;
     private int oldSong;
@@ -98,7 +101,7 @@ public class MusicService extends Service implements
             adapter.notifyItemChanged(oldSong);
             Log.d(MainActivity.DEBUG_TAG, String.format("OldSongPos: %d", oldSong));
 
-             //adding new color
+            //adding new color
             songs.get(songPos).setHasColor(true);
             adapter.notifyItemChanged(songPos);
             oldSong = songPos;
@@ -106,6 +109,7 @@ public class MusicService extends Service implements
 
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), String.format("Couldn't play song %s", songTitle), Toast.LENGTH_LONG).show();
             //Todo - Doesn't show the right information on exception
         }
     }
@@ -118,8 +122,8 @@ public class MusicService extends Service implements
         playSong();
     }
 
-    public void playNext() {
-
+    public void playNext(boolean fromUser) {
+        playAfterPrepare = true;
         if (isShuffle) {
             int newSong = songPos;
             while (newSong == songPos) {
@@ -129,7 +133,14 @@ public class MusicService extends Service implements
         } else {
             songPos++;
             if (songPos > songs.size() - 1) {
-                songPos = 0;
+                if (isRepeat || fromUser) {
+                    songPos = 0;
+                }
+                else {
+                    songPos--;
+                    musicControls.updatePlayButton(true);
+                    playAfterPrepare = false;
+                }
             }
         }
         playSong();
@@ -137,6 +148,12 @@ public class MusicService extends Service implements
 
     public void setShuffle() {
         isShuffle = !isShuffle;
+        musicControls.updateShuffleButton(isShuffle);
+    }
+
+    public void setRepeat() {
+        isRepeat = !isRepeat;
+        musicControls.updateRepeatButton(isRepeat);
     }
 
     public void setSong(int songPos) {
@@ -209,7 +226,7 @@ public class MusicService extends Service implements
         public void onCompletion(MediaPlayer mp) {
             if(player.getCurrentPosition() > 0) {
                 mp.reset();
-                playNext();
+                playNext(false);
             }
         }
     }
@@ -223,21 +240,22 @@ public class MusicService extends Service implements
     @Override
     public void onPrepared(MediaPlayer mp) {
 
-        musicControls.updatePlayButton(false);
-        musicControls.setSongInfo(songTitle, songArtist);
-        musicControls.setSongMax(getDur());
-        musicControls.setSongPos(getPos());
+        if (playAfterPrepare) {
+            musicControls.updatePlayButton(false);
+            musicControls.setSongInfo(songTitle, songArtist);
+            musicControls.setSongMax(getDur());
+            musicControls.setSongPos(getPos());
 
-        mp.start();
-        //mp.setOnCompletionListener(new onCompletionListener());
-        seekBarTimer();
+            mp.start();
+            //mp.setOnCompletionListener(new onCompletionListener());
+            seekBarTimer();
 
-        NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent notIntent = new Intent(this, MainActivity.class);
-        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            Intent notIntent = new Intent(this, MainActivity.class);
+            notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         /*
         Intent notPauseIntent = new Intent();
@@ -246,16 +264,20 @@ public class MusicService extends Service implements
         NotificationCompat.Action pauseAction = new NotificationCompat.Action.Builder(MusicControls.PLAY_RESOURCE, "Pause", pendIntPause).build();
         */
 
-        builder.setContentIntent(pendInt)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker(songTitle)
-                .setContentTitle("Playing")
-                .setContentText(songTitle);
-        Notification notif = builder.build();
+            builder.setContentIntent(pendInt)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setTicker(songTitle)
+                    .setContentTitle("Playing")
+                    .setContentText(songTitle);
+            Notification notif = builder.build();
 
-        startForeground(NOTIFY_ID, notif);
+            startForeground(NOTIFY_ID, notif);
 
-
-
+        }
+        else {
+            playAfterPrepare = true;
+            musicControls.setSongMax(getDur());
+            musicControls.setSongPos(getPos());
+        }
     }
 }

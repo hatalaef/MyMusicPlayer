@@ -152,11 +152,6 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
         //noinspection SimplifiableIfStatement
         switch (id) {
-            case R.id.action_repeat:
-                break;
-            case R.id.action_shuffle:
-                musicService.setShuffle();
-                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -200,25 +195,10 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         }
     }
 
-    private void playNext() {
-        musicService.playNext();
-        if (playbackPaused) {
-            playbackPaused = false;
-        }
-    }
-
-    private void playPrev() {
-        musicService.playPrev();
-        if (playbackPaused) {
-            playbackPaused = false;
-        }
-    }
-
-
-
     @Override
     public void onPlayClicked() {
-        if (playbackPaused) {
+        if (!musicService.isPlaying()) {
+        //if (playbackPaused) {
             playbackPaused = false;
             musicService.go();
         }
@@ -231,7 +211,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     @Override
     public void onNextClicked() {
-        musicService.playNext();
+        musicService.playNext(true);
     }
 
     @Override
@@ -269,5 +249,15 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     public void onSeekBarChanged(int progress) {
         musicService.seek(progress);
         musicControls.setSongPos(musicService.getPos());
+    }
+
+    @Override
+    public void onShuffleClicked() {
+        musicService.setShuffle();
+    }
+
+    @Override
+    public void onRepeatClicked() {
+        musicService.setRepeat();
     }
 }
