@@ -2,6 +2,7 @@ package com.example.emily.mymusicplayer;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,6 +27,9 @@ public class MusicControls extends Fragment {
     private SeekBar seekBar;
     private TextView navSongName;
     private TextView navSongArtist;
+    private Handler handler;
+    private Runnable rewRunnable;
+    private Runnable forRunnable;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,10 +78,20 @@ public class MusicControls extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    do {
-                        mListener.onRewindClicked();
-                    }while (event.getAction() == MotionEvent.ACTION_UP);
+                    rewRunnable = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            mListener.onRewindClicked();
+                            handler.postDelayed(this, REW_MILLES);
+                        }
+                    };
                 }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (rewRunnable != null)
+                        handler.removeCallbacks(rewRunnable);
+                }
+
                 return true;
             }
 
@@ -95,6 +109,8 @@ public class MusicControls extends Fragment {
             }
 
         });
+
+
 
 
         imgPlay.setOnClickListener(new View.OnClickListener() {
