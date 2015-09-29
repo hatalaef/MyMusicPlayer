@@ -2,7 +2,6 @@ Stuff to Do!
 
     Get view for other methods of play
         -Shuffle
-        -Play next/prev
     Playlists
     Editing
 		-Tagging

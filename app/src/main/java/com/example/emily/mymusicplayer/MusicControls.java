@@ -29,6 +29,8 @@ public class MusicControls extends Fragment {
     private SeekBar seekBar;
     private TextView navSongName;
     private TextView navSongArtist;
+    private TextView navSongPos;
+    private TextView navSongDur;
     private Handler handler = new Handler();
     private Runnable rewRunnable;
     private Runnable forRunnable;
@@ -66,6 +68,8 @@ public class MusicControls extends Fragment {
         seekBar = (SeekBar)view.findViewById(R.id.seekBar);
         navSongName = (TextView)view.findViewById(R.id.navSongName);
         navSongArtist = (TextView)view.findViewById(R.id.navSongArtist);
+        navSongPos = (TextView)view.findViewById(R.id.navSongPos);
+        navSongDur = (TextView)view.findViewById(R.id.navSongDur);
 
         imgPrev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,12 +198,39 @@ public class MusicControls extends Fragment {
         navSongArtist.setText(artist);
     }
 
-    public void setSeekBarMax(int max) {
+    public void setSongMax(int max) {
         seekBar.setMax(max);
+
+        String theTime;
+        int second = (max / 1000) % 60;
+        int minute = (max / (1000 * 60)) % 60;
+        int hour = (max / (1000 * 60 * 60)) % 60;
+
+        if (hour > 0) {
+            theTime = String.format("%d:%02d:%02d", hour, minute, second);
+        }
+        else {
+            theTime = String.format("%d:%02d", minute, second);
+        }
+        navSongDur.setText(String.format(theTime));
     }
 
-    public void setSeekBarPos(int pos) {
+    public void setSongPos(int pos) {
         seekBar.setProgress(pos);
+
+        String theTime;
+        int second = (pos / 1000) % 60;
+        int minute = (pos / (1000 * 60)) % 60;
+        int hour = (pos / (1000 * 60 * 60)) % 60;
+
+        if (hour > 0) {
+            theTime = String.format("%d:%02d:%02d", hour, minute, second);
+        }
+        else {
+            theTime = String.format("%d:%02d", minute, second);
+        }
+
+        navSongPos.setText(String.format(theTime));
     }
 
 

@@ -26,7 +26,7 @@ public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     private static final int NOTIFY_ID = 1;
-    private static final int SEEKBAR_TIME = 1000;
+    private static final int SEEKBAR_TIME = 300;
 
     private Handler seekHandler = new Handler();
     private Runnable runnable;
@@ -179,7 +179,7 @@ public class MusicService extends Service implements
             @Override
             public void run() {
                 if (player.isPlaying()) {
-                    musicControls.setSeekBarPos(getPos());
+                    musicControls.setSongPos(getPos());
                     seekHandler.postDelayed(this, SEEKBAR_TIME);
                 }
                 else
@@ -225,8 +225,8 @@ public class MusicService extends Service implements
 
         musicControls.updatePlayButton(false);
         musicControls.setSongInfo(songTitle, songArtist);
-        musicControls.setSeekBarMax(getDur());
-        musicControls.setSeekBarPos(getPos());
+        musicControls.setSongMax(getDur());
+        musicControls.setSongPos(getPos());
 
         mp.start();
         //mp.setOnCompletionListener(new onCompletionListener());
