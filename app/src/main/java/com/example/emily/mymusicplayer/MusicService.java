@@ -35,22 +35,25 @@ public class MusicService extends Service implements
     private MusicControls musicControls;
     private MediaPlayer player;
     private ArrayList<Song> songs;
+    private ArrayList<Song> nowPlayingSongs;
     private int songPos;
+    private Random random;
     private final IBinder musicBind = new MusicBinder();
     private String songTitle = "";
     private String songArtist = "";
     private boolean isShuffle = false;
     private boolean isRepeat = false;
     private boolean playAfterPrepare = true;
-    private Random rand;
+    //private Random rand;
     private SongAdapter adapter;
     private int oldSong;
+    private boolean prevFromClick;
 
     @Override
     public void onCreate() {
         super.onCreate();
         songPos = 0;
-        rand = new Random();
+        //rand = new Random();
         player = new MediaPlayer();
         initMusicPlayer();
     }
@@ -72,9 +75,12 @@ public class MusicService extends Service implements
 
     public void setList(ArrayList<Song> songs,SongAdapter adapter, MusicControls musicControls) {
         this.songs = songs;
+        nowPlayingSongs = new ArrayList<>();
+        nowPlayingSongs.addAll(songs);
         this.adapter = adapter;
         this.musicControls = musicControls;
         oldSong = 0;
+        prevFromClick = false;
     }
 
     public class MusicBinder extends Binder {
@@ -83,9 +89,12 @@ public class MusicService extends Service implements
         }
     }
 
-    public void playSong() {
+    public void playSong(boolean fromUserClick) {
+        //for shuffle purposes. if the user picked next song or if program did
+        if (fromUserClick);
+            //something
         player.reset();
-        Song playSong = songs.get(songPos);
+        Song playSong = nowPlayingSongs.get(songPos);
         songTitle = playSong.getTitle();
         songArtist = playSong.getArtist();
         long currSong = playSong.getId();
@@ -97,14 +106,21 @@ public class MusicService extends Service implements
             player.prepareAsync();
 
             //getting rid of old color
-            songs.get(oldSong).setHasColor(false);
+            songs.get(nowPlayingSongs.get(songPos).getVisibleSongPos()).setHasColor(false);
             adapter.notifyItemChanged(oldSong);
             Log.d(MainActivity.DEBUG_TAG, String.format("OldSongPos: %d", oldSong));
 
             //adding new color
-            songs.get(songPos).setHasColor(true);
+            songs.get(nowPlayingSongs.get(songPos).getVisibleSongPos()).setHasColor(true);
             adapter.notifyItemChanged(songPos);
-            oldSong = songPos;
+
+            if (fromUserClick) {
+                prevFromClick = true;
+            }
+            else {
+                prevFromClick = false;
+            }
+
             Log.d(MainActivity.DEBUG_TAG, String.format("NewSongPos: %d", songPos));
 
         } catch (IOException e) {
@@ -117,38 +133,47 @@ public class MusicService extends Service implements
     public void playPrev() {
         songPos--;
         if (songPos < 0) {
-            songPos = songs.size() - 1;
+            songPos = nowPlayingSongs.size() - 1;
         }
-        playSong();
+        playSong(false);
     }
 
     public void playNext(boolean fromUser) {
         playAfterPrepare = true;
+        /*
         if (isShuffle) {
             int newSong = songPos;
             while (newSong == songPos) {
-                newSong = rand.nextInt(songs.size() - 1);
+                newSong = rand.nextInt(nowPlayingSongs.size() - 1);
             }
             songPos = newSong;
         } else {
-            songPos++;
-            if (songPos > songs.size() - 1) {
-                if (isRepeat || fromUser) {
-                    songPos = 0;
-                }
-                else {
-                    songPos--;
-                    musicControls.updatePlayButton(true);
-                    playAfterPrepare = false;
-                }
+        */
+        songPos++;
+        if (songPos > nowPlayingSongs.size() - 1) {
+            if (isRepeat || fromUser) {
+                songPos = 0;
+            }
+            else {
+                songPos--;
+                musicControls.updatePlayButton(true);
+                playAfterPrepare = false;
             }
         }
-        playSong();
+
+        playSong(false);
     }
 
     public void setShuffle() {
         isShuffle = !isShuffle;
         musicControls.updateShuffleButton(isShuffle);
+        if (isShuffle) {
+            shuffleFisherYates();
+        }
+        else {
+            nowPlayingSongs.clear();
+            nowPlayingSongs.addAll(songs);
+        }
     }
 
     public void setRepeat() {
@@ -204,6 +229,17 @@ public class MusicService extends Service implements
             }
         };
         seekHandler.postDelayed(runnable, SEEKBAR_TIME);
+    }
+
+    //hopefully shuffles the songs
+    public void shuffleFisherYates() {
+        Random random = new Random();
+        for (int i = 0; i < nowPlayingSongs.size(); i++) {
+            int j = random.nextInt((nowPlayingSongs.size() - 1) - i + 1) + i;
+            Song temp = nowPlayingSongs.get(i);
+            nowPlayingSongs.set(i, nowPlayingSongs.get(j));
+            nowPlayingSongs.set(j, temp);
+        }
     }
 
 

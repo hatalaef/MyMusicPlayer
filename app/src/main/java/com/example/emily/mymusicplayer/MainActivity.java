@@ -60,6 +60,9 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
         songList = new ArrayList<>();
         getSongList();
+        for (int i = 0; i < songList.size(); i++) {
+            songList.get(i).setVisibleSongPos(i);
+        }
 
         adapter = new SongAdapter(this, songList);
         mainListMusic.setAdapter(adapter);
@@ -189,7 +192,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     public void songPicked(int i) {
         musicService.setSong(i);
-        musicService.playSong();
+        musicService.playSong(true);
         if (playbackPaused) {
             playbackPaused = false;
         }

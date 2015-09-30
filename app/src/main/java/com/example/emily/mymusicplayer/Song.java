@@ -4,7 +4,8 @@ public class Song {
     private long id;
     private String title;
     private String artist;
-    boolean hasColor;
+    private boolean hasColor;
+    private int visibleSongPos;
 
     public Song(long id, String title, String artist) {
         this.id = id;
@@ -31,6 +32,14 @@ public class Song {
 
     public void setHasColor(boolean hasColor) {
         this.hasColor = hasColor;
+    }
+
+    public int getVisibleSongPos() {
+        return visibleSongPos;
+    }
+
+    public void setVisibleSongPos(int visibleSongPos) {
+        this.visibleSongPos = visibleSongPos;
     }
 
     @Override
