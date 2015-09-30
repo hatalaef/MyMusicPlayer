@@ -37,7 +37,6 @@ public class MusicService extends Service implements
     private ArrayList<Song> songs;
     private ArrayList<Song> nowPlayingSongs;
     private int songPos;
-    private Random random;
     private final IBinder musicBind = new MusicBinder();
     private String songTitle = "";
     private String songArtist = "";
@@ -47,7 +46,6 @@ public class MusicService extends Service implements
     //private Random rand;
     private SongAdapter adapter;
     private int oldSong;
-    private boolean prevFromClick;
 
     @Override
     public void onCreate() {
@@ -80,7 +78,6 @@ public class MusicService extends Service implements
         this.adapter = adapter;
         this.musicControls = musicControls;
         oldSong = 0;
-        prevFromClick = false;
     }
 
     public class MusicBinder extends Binder {
@@ -91,10 +88,15 @@ public class MusicService extends Service implements
 
     public void playSong(boolean fromUserClick) {
         //for shuffle purposes. if the user picked next song or if program did
-        if (fromUserClick);
-            //something
+        ArrayList<Song> tempList = new ArrayList<>();
+
+        if (fromUserClick)
+            tempList = songs;
+        else {
+            tempList = nowPlayingSongs;
+        }
         player.reset();
-        Song playSong = nowPlayingSongs.get(songPos);
+        Song playSong = tempList.get(songPos);
         songTitle = playSong.getTitle();
         songArtist = playSong.getArtist();
         long currSong = playSong.getId();
@@ -106,20 +108,13 @@ public class MusicService extends Service implements
             player.prepareAsync();
 
             //getting rid of old color
-            songs.get(nowPlayingSongs.get(songPos).getVisibleSongPos()).setHasColor(false);
+            songs.get(tempList.get(songPos).getVisibleSongPos()).setHasColor(false);
             adapter.notifyItemChanged(oldSong);
             Log.d(MainActivity.DEBUG_TAG, String.format("OldSongPos: %d", oldSong));
 
             //adding new color
-            songs.get(nowPlayingSongs.get(songPos).getVisibleSongPos()).setHasColor(true);
+            songs.get(tempList.get(songPos).getVisibleSongPos()).setHasColor(true);
             adapter.notifyItemChanged(songPos);
-
-            if (fromUserClick) {
-                prevFromClick = true;
-            }
-            else {
-                prevFromClick = false;
-            }
 
             Log.d(MainActivity.DEBUG_TAG, String.format("NewSongPos: %d", songPos));
 
