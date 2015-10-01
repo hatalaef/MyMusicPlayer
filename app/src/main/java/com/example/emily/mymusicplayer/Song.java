@@ -7,10 +7,11 @@ public class Song {
     private boolean hasColor;
     private int visibleSongPos;
 
-    public Song(long id, String title, String artist) {
+    public Song(long id, String title, String artist, int visibleSongPos) {
         this.id = id;
         this.title = title;
         this.artist = artist;
+        this.visibleSongPos = visibleSongPos;
         hasColor = false;
     }
 
@@ -44,7 +45,8 @@ public class Song {
 
     @Override
     public String toString() {
-        return String.format("Song - Id: %d, Title: %s, Artist: %s, HasColor: %b", id, title, artist, hasColor);
+        return String.format("Song - Id: %d, Title: %s, Artist: %s, HasColor: %b, VisibleSongPos: %d",
+                id, title, artist, hasColor, visibleSongPos);
     }
 
 }

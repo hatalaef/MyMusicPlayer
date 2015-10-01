@@ -45,7 +45,9 @@ public class MusicService extends Service implements
     private boolean playAfterPrepare = true;
     //private Random rand;
     private SongAdapter adapter;
-    private int oldSong;
+    private int shuffleOldSong;
+    private int oldVisiblePos;
+    private boolean oldFromUser = true;
 
     @Override
     public void onCreate() {
@@ -77,7 +79,7 @@ public class MusicService extends Service implements
         nowPlayingSongs.addAll(songs);
         this.adapter = adapter;
         this.musicControls = musicControls;
-        oldSong = 0;
+        oldVisiblePos = 0;
     }
 
     public class MusicBinder extends Binder {
@@ -88,13 +90,14 @@ public class MusicService extends Service implements
 
     public void playSong(boolean fromUserClick) {
         //for shuffle purposes. if the user picked next song or if program did
-        ArrayList<Song> tempList = new ArrayList<>();
+        ArrayList<Song> tempList, tempListOld;
+        shuffleOldSong = oldVisiblePos;
 
         if (fromUserClick)
             tempList = songs;
-        else {
+        else
             tempList = nowPlayingSongs;
-        }
+
         player.reset();
         Song playSong = tempList.get(songPos);
         songTitle = playSong.getTitle();
@@ -104,19 +107,26 @@ public class MusicService extends Service implements
 
         try {
             Log.d(MainActivity.DEBUG_TAG, playSong.toString());
+            Log.d(MainActivity.DEBUG_TAG, String.format("ClickFromUser: %b, OldClick: %b", fromUserClick, oldFromUser));
             player.setDataSource(getApplicationContext(), trackUri);
             player.prepareAsync();
 
             //getting rid of old color
-            songs.get(tempList.get(songPos).getVisibleSongPos()).setHasColor(false);
-            adapter.notifyItemChanged(oldSong);
-            Log.d(MainActivity.DEBUG_TAG, String.format("OldSongPos: %d", oldSong));
+            songs.get(oldVisiblePos).setHasColor(false);
+            adapter.notifyItemChanged(oldVisiblePos);
+            Log.d(MainActivity.DEBUG_TAG, String.format("OldSong#: %d, VisibleSongPos: %d, OldSong: %s",
+                    oldVisiblePos, songs.get(oldVisiblePos).getVisibleSongPos(), songs.get(oldVisiblePos).toString()));
+            //Log.d(MainActivity.DEBUG_TAG, String.format("OldSongPos: %d", oldSong));
 
             //adding new color
             songs.get(tempList.get(songPos).getVisibleSongPos()).setHasColor(true);
-            adapter.notifyItemChanged(songPos);
+            adapter.notifyItemChanged(tempList.get(songPos).getVisibleSongPos());
+            Log.d(MainActivity.DEBUG_TAG, String.format("NewSong#: %d, VisibleSongPos: %d, NewSong: %s",
+                    songPos, tempList.get(songPos).getVisibleSongPos(), tempList.get(songPos).toString()));
 
-            Log.d(MainActivity.DEBUG_TAG, String.format("NewSongPos: %d", songPos));
+            oldVisiblePos = tempList.get(songPos).getVisibleSongPos();
+
+            //Log.d(MainActivity.DEBUG_TAG, String.format("NewSongPos: %d", songPos));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,17 +145,10 @@ public class MusicService extends Service implements
 
     public void playNext(boolean fromUser) {
         playAfterPrepare = true;
-        /*
-        if (isShuffle) {
-            int newSong = songPos;
-            while (newSong == songPos) {
-                newSong = rand.nextInt(nowPlayingSongs.size() - 1);
-            }
-            songPos = newSong;
-        } else {
-        */
+
         songPos++;
         if (songPos > nowPlayingSongs.size() - 1) {
+            //To repeat list or not
             if (isRepeat || fromUser) {
                 songPos = 0;
             }
@@ -162,6 +165,9 @@ public class MusicService extends Service implements
     public void setShuffle() {
         isShuffle = !isShuffle;
         musicControls.updateShuffleButton(isShuffle);
+        //keep track of last played song
+        //shuffleOldSong = nowPlayingSongs.get(songPos).getVisibleSongPos();
+        //shuffleOldSong = shuffleOldSong - 1;
         if (isShuffle) {
             shuffleFisherYates();
         }
