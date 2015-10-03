@@ -2,6 +2,7 @@ package com.example.emily.mymusicplayer;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -27,6 +28,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
     public static final String FOLDER_PATH = "MyMusic";
+    public static final String PLAYLIST_PATH = "MyMusic/Playlists";
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
 
     private MusicControls musicControls;
@@ -63,6 +65,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
         adapter = new SongAdapter(this, songList);
         mainListMusic.setAdapter(adapter);
+
+        CreatePlaylist.makePlaylist(songList, PLAYLIST_PATH, "testPlaylist.m3u");
 
         adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             //changes color
@@ -173,13 +177,17 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                     (android.provider.MediaStore.Audio.Media._ID);
             int artistColumn = musicCursor.getColumnIndex
                     (android.provider.MediaStore.Audio.Media.ARTIST);
+            int durationColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.DURATION);
             //add songs to list
             int i = 0;
             do {
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
-                songList.add(new Song(thisId, thisTitle, thisArtist, i));
+                int theDuration = musicCursor.getInt(durationColumn);
+                Uri theUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, thisId);
+                songList.add(new Song(thisId, thisTitle, thisArtist, theDuration, theUri, i));
                 i++;
             }
             while (musicCursor.moveToNext());

@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -102,8 +101,7 @@ public class MusicService extends Service implements
         Song playSong = tempList.get(songPos);
         songTitle = playSong.getTitle();
         songArtist = playSong.getArtist();
-        long currSong = playSong.getId();
-        Uri trackUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, currSong);
+        Uri trackUri = playSong.getUri();
 
         try {
             Log.d(MainActivity.DEBUG_TAG, playSong.toString());
@@ -116,7 +114,6 @@ public class MusicService extends Service implements
             adapter.notifyItemChanged(oldVisiblePos);
             Log.d(MainActivity.DEBUG_TAG, String.format("OldSong#: %d, VisibleSongPos: %d, OldSong: %s",
                     oldVisiblePos, songs.get(oldVisiblePos).getVisibleSongPos(), songs.get(oldVisiblePos).toString()));
-            //Log.d(MainActivity.DEBUG_TAG, String.format("OldSongPos: %d", oldSong));
 
             //adding new color
             songs.get(tempList.get(songPos).getVisibleSongPos()).setHasColor(true);
@@ -126,7 +123,6 @@ public class MusicService extends Service implements
 
             oldVisiblePos = tempList.get(songPos).getVisibleSongPos();
 
-            //Log.d(MainActivity.DEBUG_TAG, String.format("NewSongPos: %d", songPos));
 
         } catch (IOException e) {
             e.printStackTrace();
