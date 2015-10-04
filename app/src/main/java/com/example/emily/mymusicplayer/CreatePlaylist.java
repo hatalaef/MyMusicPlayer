@@ -1,12 +1,15 @@
 package com.example.emily.mymusicplayer;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.SyncFailedException;
 import java.util.ArrayList;
 
 public class CreatePlaylist {
@@ -14,58 +17,43 @@ public class CreatePlaylist {
     public final static String START_PLAYLIST = "#EXTM3U";
     public final static String MIDDLE_PLAYLIST = "#EXTINF:";
 
-    private ArrayList<Song> songs;
-    private String folderPath;
-
-    public static void makePlaylist(ArrayList<Song> songs, String folderDir, String fileName) {
+    public static void makePlaylist(ArrayList<Song> songs, String folderDir, String fileName, Context context) {
         File root = getPlaylistDir(folderDir);
         File theFile = new File(root, fileName);
-
-
-        if(!theFile.exists()) {
-            try {
-                Log.d(MainActivity.DEBUG_TAG, "Creating file");
-                theFile.createNewFile();
-            } catch (IOException e) {
-
-                e.printStackTrace();
-            }
-        }
-        else
-            Log.d(MainActivity.DEBUG_TAG, "Didn't create file");
-
-        Log.d(MainActivity.DEBUG_TAG, theFile.getPath());
+        FileOutputStream stream;
+        FileWriter writer;
 
         try {
-            FileWriter writer = new FileWriter(theFile);
-            writer.write("here");
-            writer.flush();
-            writer.close();
+            stream = new FileOutputStream(theFile);
+            try {
+                writer = new FileWriter(stream.getFD());
+                writer.append(START_PLAYLIST);
 
+                for (Song song : songs) {
+                    writer.append("\n" + MIDDLE_PLAYLIST);
+                    String info = String.format("%.0f, %s - %s%n", song.getDuration() / 1000.0, song.getArtist(), song.getTitle());
+                    String relativePath = getRelativePath(theFile, root, song.getPath());
+
+                    writer.append(info);
+                    writer.append(relativePath);
+                }
+
+                writer.flush();
+                writer.close();
+
+            } catch (SyncFailedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                stream.getFD().sync();
+                stream.close();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /*
-        try {
-            FileWriter writer = new FileWriter(theFile);
-            writer.append(START_PLAYLIST + "\n");
-            for (Song song : songs) {
-                writer.append(MIDDLE_PLAYLIST);
-                String info = String.format("%d, %s - %s%n", song.getDuration(), song.getArtist(), song.getTitle());
-                String path = (song.getUri().getPath() + "\n");
-                writer.append(info);
-                writer.append(path);
-            }
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-
     }
 
     private static File getPlaylistDir(String folderDir) {
@@ -76,4 +64,30 @@ public class CreatePlaylist {
         return file;
     }
 
+    //works for me, but probably not for all cases
+    public static String getRelativePath(File file, File folder, String songPath) {
+        String filePath = file.getAbsolutePath();
+        String folderPath = folder.getAbsolutePath();
+        String commonPath = "";
+        String begPath = "";
+        String relativePath;
+
+        if (filePath.startsWith(folderPath)) {
+            commonPath = filePath.substring(folderPath.length() + 1);
+        }
+
+        if(commonPath.startsWith("/"))
+            commonPath.replaceFirst("/", "");
+
+        String relatives[] = commonPath.split("/");
+        for (int i = 0; i < relatives.length; i++) {
+            begPath += "../";
+        }
+
+        relatives = songPath.split("/");
+        relativePath = begPath + relatives[relatives.length - 1];
+
+
+        return relativePath;
+    }
 }

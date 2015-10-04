@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -101,7 +102,7 @@ public class MusicService extends Service implements
         Song playSong = tempList.get(songPos);
         songTitle = playSong.getTitle();
         songArtist = playSong.getArtist();
-        Uri trackUri = playSong.getUri();
+        Uri trackUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, playSong.getId());
 
         try {
             Log.d(MainActivity.DEBUG_TAG, playSong.toString());

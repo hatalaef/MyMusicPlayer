@@ -1,7 +1,5 @@
 package com.example.emily.mymusicplayer;
 
-import android.net.Uri;
-
 public class Song {
     private long id;
     private String title;
@@ -9,14 +7,14 @@ public class Song {
     private boolean hasColor;
     private int visibleSongPos;
     private int duration;
-    private Uri uri;
+    private String path;
 
-    public Song(long id, String title, String artist, int duration, Uri uri, int visibleSongPos) {
+    public Song(long id, String title, String artist, int duration, String path, int visibleSongPos) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
-        this.uri = uri;
+        this.path = path;
         this.visibleSongPos = visibleSongPos;
         hasColor = false;
     }
@@ -57,18 +55,18 @@ public class Song {
         this.duration = duration;
     }
 
-    public Uri getUri() {
-        return uri;
+    public String getPath() {
+        return path;
     }
 
-    public void setUri(Uri uri) {
-        this.uri = uri;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override
     public String toString() {
         return String.format("Song - Id: %d, Title: %s, Artist: %s, Dur: %d, Uri: %s, HasColor: %b, VisibleSongPos: %d",
-                id, title, artist, duration, uri.toString(), hasColor, visibleSongPos);
+                id, title, artist, duration, path, hasColor, visibleSongPos);
     }
 
 }

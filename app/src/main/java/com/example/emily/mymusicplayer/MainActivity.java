@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         adapter = new SongAdapter(this, songList);
         mainListMusic.setAdapter(adapter);
 
-        CreatePlaylist.makePlaylist(songList, PLAYLIST_PATH, "testPlaylist.m3u");
+        CreatePlaylist.makePlaylist(songList, PLAYLIST_PATH, "testPlaylist.m3u", getApplicationContext());
 
         adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             //changes color
@@ -179,6 +179,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                     (android.provider.MediaStore.Audio.Media.ARTIST);
             int durationColumn = musicCursor.getColumnIndex
                     (android.provider.MediaStore.Audio.Media.DURATION);
+            int dataColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATA);
             //add songs to list
             int i = 0;
             do {
@@ -186,8 +188,9 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
                 int theDuration = musicCursor.getInt(durationColumn);
+                String thePath = musicCursor.getString(dataColumn);
                 Uri theUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, thisId);
-                songList.add(new Song(thisId, thisTitle, thisArtist, theDuration, theUri, i));
+                songList.add(new Song(thisId, thisTitle, thisArtist, theDuration, thePath, i));
                 i++;
             }
             while (musicCursor.moveToNext());
