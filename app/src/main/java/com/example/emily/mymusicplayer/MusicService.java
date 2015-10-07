@@ -213,6 +213,7 @@ public class MusicService extends Service implements
         seekBarTimer();
     }
 
+    //updates the seek bar a few times a second
     public void seekBarTimer() {
         runnable = new Runnable() {
 

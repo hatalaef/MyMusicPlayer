@@ -2,14 +2,13 @@ package com.example.emily.mymusicplayer;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -22,6 +21,7 @@ import android.view.View;
 
 import com.example.emily.mymusicplayer.MusicService.MusicBinder;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity implements MusicControls.OnFragmentInteractionListener {
@@ -29,17 +29,18 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
     public static final String FOLDER_PATH = "MyMusic";
     public static final String PLAYLIST_PATH = "MyMusic/Playlists";
+    public static final String PLAYLIST_TYPE = "m3u";
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
 
     private MusicControls musicControls;
 
-    private Handler seekHandler = new Handler();
-
     private RecyclerView mainListMusic;
-    private SongAdapter adapter;
+    private SongAdapter songAdapter;
+    private PlaylistAdapter playlistAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private ArrayList<Song> songList;
+    private ArrayList<Playlist> playlistList;
     private MusicService musicService;
     private Intent playIntent;
     private boolean musicBound = false;
@@ -63,12 +64,19 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         songList = new ArrayList<>();
         getSongList();
 
-        adapter = new SongAdapter(this, songList);
-        mainListMusic.setAdapter(adapter);
+        songAdapter = new SongAdapter(this, songList);
+        mainListMusic.setAdapter(songAdapter);
 
-        CreatePlaylist.makePlaylist(songList, PLAYLIST_PATH, "testPlaylist.m3u", getApplicationContext());
+        playlistList = new ArrayList<>();
+        getPlaylistList();
 
-        adapter.setOnItemClickListener(new SongAdapter.ClickListener() {
+        playlistAdapter = new PlaylistAdapter(this, playlistList);
+        mainListMusic.setAdapter(playlistAdapter);
+
+
+        //CreatePlaylist.makePlaylist(songList, PLAYLIST_PATH, "testPlaylist.m3u", getApplicationContext());
+
+        songAdapter.setOnItemClickListener(new SongAdapter.ClickListener() {
             //changes color
             @Override
             public void onItemClick(int position, View v) {
@@ -78,6 +86,17 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
             @Override
             public void onItemLongClick(int position, View v) {
                 songPicked(position);
+            }
+        });
+
+        playlistAdapter.setOnItemClickListener(new PlaylistAdapter.ClickListener() {
+            //changes color
+            @Override
+            public void onItemClick(int position, View v) {
+            }
+
+            @Override
+            public void onItemLongClick(int position, View v) {
             }
         });
 
@@ -130,7 +149,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
             //get service
             musicService = binder.getService();
             //pass list
-            musicService.setList(songList, adapter, musicControls);
+            musicService.setList(songList, songAdapter, musicControls);
             musicBound = true;
         }
 
@@ -167,7 +186,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         String folderPath = "%" + FOLDER_PATH + "%";
         //gets music from certain folder
         Cursor musicCursor = musicResolver.query(musicUri, null, MediaStore.Audio.Media.DATA + " like ? ",
-                new String[] {folderPath}, null);
+                new String[]{folderPath}, null);
 
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //get columns
@@ -188,9 +207,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
                 int theDuration = musicCursor.getInt(durationColumn);
-                String thePath = musicCursor.getString(dataColumn);
-                Uri theUri = ContentUris.withAppendedId(MainActivity.STORAGE_LOCATION, thisId);
-                songList.add(new Song(thisId, thisTitle, thisArtist, theDuration, thePath, i));
+                String thisPath = musicCursor.getString(dataColumn);
+                songList.add(new Song(thisId, thisTitle, thisArtist, theDuration, thisPath, i));
                 i++;
             }
             while (musicCursor.moveToNext());
@@ -198,6 +216,32 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         if (musicCursor != null) {
             musicCursor.close();
         }
+    }
+
+    public void getPlaylistList() {
+        String folderPath = PLAYLIST_PATH;
+        //gets music from certain folder
+
+        File directory = new File(Environment.getExternalStorageDirectory(), folderPath);
+        if (!directory.mkdirs()) {
+            Log.d(MainActivity.DEBUG_TAG, "Directory not created");
+        }
+        File[] files = directory.listFiles();
+        if (files.length > 0) {
+            for (int i = 0; i < files.length; i++) {
+                String thisPath = files[i].getAbsolutePath();
+                //check if m3u
+                if (thisPath.split("\\.").length > 1 && thisPath.split("\\.")[1].equalsIgnoreCase(PLAYLIST_TYPE)) {
+                    String thisTitle = files[i].getName();
+                    int thisDuration = 0;
+                    int thisCount = 0;
+                    playlistList.add(new Playlist(thisTitle, thisDuration, thisCount, thisPath, i));
+                }
+            }
+        }
+        else
+            Log.d(DEBUG_TAG, "No playlists found");
+
     }
 
     public void songPicked(int i) {

@@ -126,9 +126,6 @@ public class MusicControls extends Fragment {
 
         });
 
-
-
-
         imgPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

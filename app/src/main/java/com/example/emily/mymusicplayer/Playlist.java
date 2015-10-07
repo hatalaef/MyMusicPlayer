@@ -1,34 +1,25 @@
 package com.example.emily.mymusicplayer;
 
-public class Song {
-    private long id;
+public class Playlist {
     private String title;
-    private String artist;
     private boolean hasColor;
     private int visibleSongPos;
     private int duration;
+    private int count;
     private String path;
 
-    public Song(long id, String title, String artist, int duration, String path, int visibleSongPos) {
-        this.id = id;
+    public Playlist(String title, int duration, int count, String path, int visibleSongPos) {
         this.title = title;
-        this.artist = artist;
         this.duration = duration;
+        this.count = count;
         this.path = path;
         this.visibleSongPos = visibleSongPos;
         hasColor = false;
     }
 
-    public long getId() {
-        return id;
-    }
 
     public String getTitle() {
         return title;
-    }
-
-    public String getArtist() {
-        return artist;
     }
 
     public boolean getHasColor() {
@@ -47,6 +38,10 @@ public class Song {
         return duration;
     }
 
+    public int getCount() {
+        return count;
+    }
+
     public String getPath() {
         return path;
     }
@@ -57,8 +52,8 @@ public class Song {
 
     @Override
     public String toString() {
-        return String.format("Song - Id: %d, Title: %s, Artist: %s, Dur: %d, Uri: %s, HasColor: %b, VisibleSongPos: %d",
-                id, title, artist, duration, path, hasColor, visibleSongPos);
+        return String.format("Playlist - Title: %s, Dur: %d, Count: %d, Uri: %s, HasColor: %b, VisibleSongPos: %d",
+                title, duration, count, path, hasColor, visibleSongPos);
     }
 
 }
