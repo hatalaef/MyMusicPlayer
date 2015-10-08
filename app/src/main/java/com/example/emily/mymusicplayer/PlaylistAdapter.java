@@ -1,7 +1,6 @@
 package com.example.emily.mymusicplayer;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +27,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView txtPlaylistName;
         TextView txtPlaylistCount;
+        TextView txtPlaylistDuration;
         LinearLayout linearLayout;
         public ViewHolder(View v) {
             super(v);
@@ -35,21 +35,18 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             v.setOnLongClickListener(this);
             txtPlaylistName = (TextView)v.findViewById(R.id.txtPlaylistName);
             txtPlaylistCount = (TextView)v.findViewById(R.id.txtPlaylistCount);
+            txtPlaylistDuration = (TextView)v.findViewById(R.id.txtPlaylistDuration);
             linearLayout = (LinearLayout)v.findViewById(R.id.playlistLayout);
         }
 
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
-            if(!playlists.get(this.getAdapterPosition()).getHasColor())
-                playlists.get(this.getAdapterPosition()).setHasColor(true);
         }
 
         @Override
         public boolean onLongClick(View v) {
             clickListener.onItemLongClick(getAdapterPosition(), v);
-            if(!playlists.get(this.getAdapterPosition()).getHasColor())
-                playlists.get(this.getAdapterPosition()).setHasColor(true);
             return false;
         }
     }
@@ -63,17 +60,26 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     //like the getView on a ListView, this is where the data is bound to the views. called when redrawn for scrolls or w/e
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        String theTime;
+        int theDuration = playlists.get(i).getDuration();
+        int second = theDuration % 60;
+        int minute = (theDuration /  60) % 60;
+        int hour = (theDuration / (60 * 60)) % 60;
+
+        if (hour > 0) {
+            theTime = String.format("%d:%02d:%02d", hour, minute, second);
+        }
+        else {
+            theTime = String.format("%d:%02d", minute, second);
+        }
+
         viewHolder.txtPlaylistName.setText(playlists.get(i).getTitle());
-        viewHolder.txtPlaylistCount.setText(Integer.toString(playlists.get(i).getCount()));
+        viewHolder.txtPlaylistCount.setText(Integer.toString(playlists.get(i).getCount()) + " songs");
+        viewHolder.txtPlaylistDuration.setText(theTime);
 
         viewHolder.txtPlaylistName.setTag(i); //used I think
-        viewHolder.txtPlaylistCount.setTag(i); //maybe not used
-
-        //change view if playing
-        viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
-        if (playlists.get(i).getHasColor()) {
-            viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
-        }
+        viewHolder.txtPlaylistCount.setTag(i);
+        viewHolder.txtPlaylistDuration.setTag(i);//maybe not used
     }
 
     @Override

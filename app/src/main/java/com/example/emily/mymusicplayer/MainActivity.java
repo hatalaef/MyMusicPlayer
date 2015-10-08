@@ -21,7 +21,9 @@ import android.view.View;
 
 import com.example.emily.mymusicplayer.MusicService.MusicBinder;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity implements MusicControls.OnFragmentInteractionListener {
@@ -232,10 +234,30 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                 String thisPath = files[i].getAbsolutePath();
                 //check if m3u
                 if (thisPath.split("\\.").length > 1 && thisPath.split("\\.")[1].equalsIgnoreCase(PLAYLIST_TYPE)) {
-                    String thisTitle = files[i].getName();
+                    ArrayList<Song> songs = new ArrayList<>();
                     int thisDuration = 0;
-                    int thisCount = 0;
-                    playlistList.add(new Playlist(thisTitle, thisDuration, thisCount, thisPath, i));
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(files[i]));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            if (line.contains(CreatePlaylist.MIDDLE_PLAYLIST)) {
+                                String firstLine = line.split(CreatePlaylist.MIDDLE_PLAYLIST)[1];
+                                String[] firstLineSplit = firstLine.split(", ", 2);
+                                Integer duration = Integer.parseInt(firstLineSplit[0]);
+                                String artist = firstLineSplit[1].split(" - ", 2)[0];
+                                String title = firstLineSplit[1].split(" - ", 2)[1];
+                                String path = reader.readLine();
+                                songs.add(new Song(title, artist, duration, path));
+                                thisDuration += duration;
+                            }
+                        }
+                        reader.close();
+                        } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    String thisTitle = files[i].getName();
+                    int thisCount = songs.size();
+                    playlistList.add(new Playlist(thisTitle, thisDuration, thisCount, thisPath, songs, i));
                 }
             }
         }
@@ -255,7 +277,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     @Override
     public void onPlayClicked() {
         if (!musicService.isPlaying()) {
-        //if (playbackPaused) {
+            //if (playbackPaused) {
             playbackPaused = false;
             musicService.go();
         }

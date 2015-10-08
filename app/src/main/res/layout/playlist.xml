@@ -19,4 +19,11 @@
         android:text=""
         android:id="@+id/txtPlaylistCount"
         android:layout_marginStart="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/txtPlaylistDuration"
+        android:layout_marginStart="15dp" />
 </LinearLayout>

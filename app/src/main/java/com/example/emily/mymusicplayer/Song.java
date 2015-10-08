@@ -9,6 +9,13 @@ public class Song {
     private int duration;
     private String path;
 
+    public Song(String title, String artist, int duration, String path) {
+        this.title = title;
+        this.artist = artist;
+        this.duration = duration;
+        this.path = path;
+    }
+
     public Song(long id, String title, String artist, int duration, String path, int visibleSongPos) {
         this.id = id;
         this.title = title;

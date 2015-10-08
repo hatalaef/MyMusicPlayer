@@ -1,33 +1,25 @@
 package com.example.emily.mymusicplayer;
 
+import java.util.ArrayList;
+
 public class Playlist {
     private String title;
-    private boolean hasColor;
     private int visibleSongPos;
     private int duration;
-    private int count;
     private String path;
+    private ArrayList<Song> songs;
 
-    public Playlist(String title, int duration, int count, String path, int visibleSongPos) {
+    public Playlist(String title, int duration, int count, String path, ArrayList<Song> songs, int visibleSongPos) {
         this.title = title;
         this.duration = duration;
-        this.count = count;
         this.path = path;
+        this.songs = songs;
         this.visibleSongPos = visibleSongPos;
-        hasColor = false;
     }
 
 
     public String getTitle() {
         return title;
-    }
-
-    public boolean getHasColor() {
-        return hasColor;
-    }
-
-    public void setHasColor(boolean hasColor) {
-        this.hasColor = hasColor;
     }
 
     public int getVisibleSongPos() {
@@ -39,7 +31,7 @@ public class Playlist {
     }
 
     public int getCount() {
-        return count;
+        return songs.size();
     }
 
     public String getPath() {
@@ -52,8 +44,8 @@ public class Playlist {
 
     @Override
     public String toString() {
-        return String.format("Playlist - Title: %s, Dur: %d, Count: %d, Uri: %s, HasColor: %b, VisibleSongPos: %d",
-                title, duration, count, path, hasColor, visibleSongPos);
+        return String.format("Playlist - Title: %s, Dur: %d, Count: %d, Uri: %s, VisibleSongPos: %d",
+                title, duration, songs.size(), path);
     }
 
 }
