@@ -14,6 +14,7 @@ public class Song {
         this.artist = artist;
         this.duration = duration;
         this.path = path;
+        hasColor = false;
     }
 
     public Song(long id, String title, String artist, int duration, String path, int visibleSongPos) {

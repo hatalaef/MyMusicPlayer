@@ -1,6 +1,7 @@
 package com.example.emily.mymusicplayer;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,16 +38,22 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             txtPlaylistCount = (TextView)v.findViewById(R.id.txtPlaylistCount);
             txtPlaylistDuration = (TextView)v.findViewById(R.id.txtPlaylistDuration);
             linearLayout = (LinearLayout)v.findViewById(R.id.playlistLayout);
+
+
         }
 
         @Override
         public void onClick(View v) {
             clickListener.onItemClick(getAdapterPosition(), v);
+            if(!playlists.get(this.getAdapterPosition()).getHasColor())
+                playlists.get(this.getAdapterPosition()).setHasColor(true);
         }
 
         @Override
         public boolean onLongClick(View v) {
             clickListener.onItemLongClick(getAdapterPosition(), v);
+            if(!playlists.get(this.getAdapterPosition()).getHasColor())
+                playlists.get(this.getAdapterPosition()).setHasColor(true);
             return false;
         }
     }
@@ -80,6 +87,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         viewHolder.txtPlaylistName.setTag(i); //used I think
         viewHolder.txtPlaylistCount.setTag(i);
         viewHolder.txtPlaylistDuration.setTag(i);//maybe not used
+
+        //change view if selected
+        viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.songRow));
+        if (playlists.get(i).getHasColor()) {
+            viewHolder.linearLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.accent));
+        }
     }
 
     @Override

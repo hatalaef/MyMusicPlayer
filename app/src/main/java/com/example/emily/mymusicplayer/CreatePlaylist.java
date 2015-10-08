@@ -1,7 +1,11 @@
 package com.example.emily.mymusicplayer;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
@@ -16,6 +20,77 @@ public class CreatePlaylist {
 
     public final static String START_PLAYLIST = "#EXTM3U";
     public final static String MIDDLE_PLAYLIST = "#EXTINF:";
+    private static ContentResolver musicResolver;
+    private static int oldVisiblePos = 0;
+
+    public static void setContentResolver(ContentResolver resolver) {
+        musicResolver = resolver;
+    }
+
+    public static ArrayList<Song> songsFromPlaylist(ArrayList<Playlist> playlists, Playlist playlist, PlaylistAdapter adapter, int position) {
+
+        //getting rid of old color
+        playlists.get(oldVisiblePos).setHasColor(false);
+        adapter.notifyItemChanged(oldVisiblePos);
+
+        //adding new color
+        playlists.get(position).setHasColor(true);
+        adapter.notifyItemChanged(position);
+        //adapter.notifyItemChanged(playlists.get(position).getVisiblePos());
+
+        oldVisiblePos = position;
+        //oldVisiblePos = playlists.get(position).getVisiblePos();
+
+        ArrayList<Song> songList = new ArrayList<>();
+        int i = 0;
+        for (Song song: playlist.getSongs()) {
+            //replace relative path with absolute path, kind of
+            String thePath = song.getPath();
+            song.setPath(thePath.replace("..", MainActivity.FOLDER_PATH));
+
+            getSongList(song, songList, i);
+            i++;
+        }
+        return songList;
+    }
+
+    //takes a song from a playlist and gives it the right data
+    private static void getSongList(Song song, ArrayList<Song> songList, int i) {
+        Uri musicUri = MainActivity.STORAGE_LOCATION;
+        //gets music from certain folder
+        Cursor musicCursor = musicResolver.query(musicUri, null, "UPPER(" + MediaStore.Audio.Media.DATA + ") LIKE UPPER(?) ",
+                new String[]{"%" + song.getPath() + "%"}, null);
+
+        if(musicCursor!=null && musicCursor.moveToFirst()){
+            //get columns
+            int titleColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.TITLE);
+            int idColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media._ID);
+            int artistColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.ARTIST);
+            int durationColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.DURATION);
+            int dataColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATA);
+            //add songs to list
+            do {
+                long thisId = musicCursor.getLong(idColumn);
+                String thisTitle = musicCursor.getString(titleColumn);
+                String thisArtist = musicCursor.getString(artistColumn);
+                int theDuration = musicCursor.getInt(durationColumn);
+                String thisPath = musicCursor.getString(dataColumn);
+                songList.add(new Song(thisId, thisTitle, thisArtist, theDuration, thisPath, i));
+            }
+            while (musicCursor.moveToNext());
+        }
+        else
+            Log.d(MainActivity.DEBUG_TAG, String.format("Playlist: Couldn't find %s", song.getPath()));
+
+        if (musicCursor != null) {
+            musicCursor.close();
+        }
+    }
 
     public static void makePlaylist(ArrayList<Song> songs, String folderDir, String fileName, Context context) {
         File root = getPlaylistDir(folderDir);

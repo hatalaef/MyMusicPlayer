@@ -3,7 +3,7 @@
     android:id="@+id/playlistLayout"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/selector_row">
+    android:background="@color/songRow">
 
     <TextView
         android:layout_width="wrap_content"

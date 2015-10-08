@@ -241,6 +241,11 @@ public class MusicService extends Service implements
         }
     }
 
+    public void changeNowPlaying(ArrayList<Song> songs, SongAdapter adapter) {
+        this.songs = songs;
+        this.adapter = adapter;
+    }
+
 
     @Nullable
     @Override
