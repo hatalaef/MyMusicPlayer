@@ -44,6 +44,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     private ArrayList<Song> songList;
     private ArrayList<Playlist> playlistList;
     private ArrayList<Song> songsFromPlaylist;
+    private ArrayList<Song> nowPlayingList;
+
     private MusicService musicService;
     private Intent playIntent;
     private boolean musicBound = false;
@@ -77,6 +79,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
 
         songsFromPlaylist = new ArrayList<>(songList);
+        nowPlayingList = new ArrayList<>(songList);
         mainListMusic.setAdapter(songAdapter);
 
         //CreatePlaylist.makePlaylist(songList, PLAYLIST_PATH, "testPlaylist.m3u", getApplicationContext());
@@ -99,6 +102,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
             @Override
             public void onItemClick(int position, View v) {
                 songsFromPlaylist = new ArrayList<>(CreatePlaylist.songsFromPlaylist(playlistList, playlistList.get(position), playlistAdapter, position));
+                if (!nowPlayingList.containsAll(songsFromPlaylist))
+                    nowPlayingList = songsFromPlaylist;
             }
 
             @Override
@@ -181,8 +186,11 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
         //noinspection SimplifiableIfStatement
         switch (id) {
-            case R.id.action_home:
-                switchHome();
+            case R.id.action_nowplaying:
+                switchNowPlaying();
+                return true;
+            case R.id.action_allsongs:
+                switchAllSongs();
                 return true;
             case R.id.action_playlists:
                 switchPlaylists();
@@ -192,12 +200,17 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         }
     }
 
-    public void switchHome() {
-        songList = new ArrayList<>(songsFromPlaylist);
+    public void switchNowPlaying() {
+        songAdapter = new SongAdapter(this, nowPlayingList);
+        mainListMusic.setAdapter(songAdapter);
+        musicService.changeNowPlaying(nowPlayingList, songAdapter);
+
+    }
+
+    public void switchAllSongs() {
         songAdapter = new SongAdapter(this, songList);
         mainListMusic.setAdapter(songAdapter);
         musicService.changeNowPlaying(songList, songAdapter);
-
     }
 
     public void switchPlaylists() {

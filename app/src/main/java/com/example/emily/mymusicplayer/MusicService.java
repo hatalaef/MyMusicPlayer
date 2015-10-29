@@ -74,7 +74,7 @@ public class MusicService extends Service implements
     }
 
     public void setList(ArrayList<Song> songs,SongAdapter adapter, MusicControls musicControls) {
-        this.songs = songs;
+        this.songs = new ArrayList<>(songs);
         nowPlayingSongs = new ArrayList<>();
         nowPlayingSongs.addAll(songs);
         this.adapter = adapter;
@@ -90,7 +90,7 @@ public class MusicService extends Service implements
 
     public void playSong(boolean fromUserClick) {
         //for shuffle purposes. if the user picked next song or if program did
-        ArrayList<Song> tempList, tempListOld;
+        ArrayList<Song> tempList;
         shuffleOldSong = oldVisiblePos;
 
         if (fromUserClick)
@@ -242,8 +242,15 @@ public class MusicService extends Service implements
     }
 
     public void changeNowPlaying(ArrayList<Song> songs, SongAdapter adapter) {
-        this.songs = songs;
+        this.songs.clear();
+        this.songs.addAll(songs);
+        this.nowPlayingSongs.clear();
+        this.nowPlayingSongs.addAll(songs);
+
         this.adapter = adapter;
+
+        oldVisiblePos = 0;
+        songPos = 0;
     }
 
 

@@ -3,6 +3,7 @@ Stuff to Do!
     Get view for other methods of play
         -playlist, all songs
         -eventually by genre/artist/etc.
+        -change so nowplaying only shows songs that are playing, duh
     Playlists
     Editing
 		-Tagging
