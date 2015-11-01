@@ -1,26 +1,33 @@
 import eyed3
-import sqlite3 as lite
-import musicDatabase
 import sys
 
+import musicDatabase
+import getFiles
+
+checkFile = False
+
 db = "music.db"
+musicDirectory = "C:\Users\Emily\Music"
+playlistDirectory = "C:\Users\Emily\AndroidStudioProjects\MyMusicPlayer\python files\playlist"
+fileDirectory = "C:\Users\Emily\AndroidStudioProjects\MyMusicPlayer\python files"
+file = "lastTime.txt"
 
-audioFile = eyed3.load("Foster the People - Call it What You Want.mp3")
+getFiles.saveCurrentTime(fileDirectory, file)
 
-musicDatabase.addSongToDb(db, audioFile)
+newFilePaths = musicDatabase.updateSinceLastRun(db, fileDirectory, file)
 
-song = musicDatabase.findSongByTitle(db, audioFile.tag.title)
 
-for item in song:
-    print item
+musicFiles = getFiles.getTheseFiles(musicDirectory, ".mp3")
+playlistFiles = getFiles.getTheseFiles(playlistDirectory, ".m3u")
 
-print    
-    
-musicDatabase.updateSong(db, song[0], album="new", genre="Alternative")
+lastFile = musicDatabase.getLastSongRow(db)
 
-song = musicDatabase.findSongByTitle(db, audioFile.tag.title)
-
-for item in song:
-    print item
+for file in musicFiles:
+    musicDatabase.compareTimes(db, file)
+    if checkFile and file == lastFile:
+        #musicDatabase.addSongToDb(db, file)
+        checkFile = False
+    #if not checkFile:
+        #musicDatabase.addSongToDb(db, file)
 
 
