@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
+    compile 'com.mpatric:mp3agic:0.8.3'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
