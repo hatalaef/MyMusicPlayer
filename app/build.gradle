@@ -21,5 +21,6 @@ android {
 
 dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
