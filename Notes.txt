@@ -18,10 +18,9 @@ Stuff to Do!
     Computer syncing
 	
 	Database
-		Filepath as primary key, or autoincrement?
-		Filepath should just be the end, so it can be identical on phone and computer.
-		i.e. /filename.mp3 or playlists/filename.m3u, then it would work as a primary key
-		eh, seems too hard to do
+		Python
+			Needs changing to add empty Strings instead of nulls
+		Phone
     
 Notes
     Changed adapter view to SongPos. If I'm careful about updating the adapter when the View changes, I think it should work?
