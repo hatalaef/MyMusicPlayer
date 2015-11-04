@@ -16,7 +16,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // private static String DB_PATH = "/data/data/YOUR_PACKAGE/databases/";
     //private static String DB_PATH = "/data/data/com/example/glennhatala/alchemy/databases/";
     private static String DB_PATH = "/data/data/MyMusicPlayer/databases/";
-    private static String DB_NAME = "databases/music";
+    private static String DB_NAME = "databases/music.db";
 
     private SQLiteDatabase myDataBase;
 

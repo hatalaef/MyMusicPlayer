@@ -16,6 +16,12 @@ Stuff to Do!
 	For the car
 
     Computer syncing
+	
+	Database
+		Filepath as primary key, or autoincrement?
+		Filepath should just be the end, so it can be identical on phone and computer.
+		i.e. /filename.mp3 or playlists/filename.m3u, then it would work as a primary key
+		eh, seems too hard to do
     
 Notes
     Changed adapter view to SongPos. If I'm careful about updating the adapter when the View changes, I think it should work?

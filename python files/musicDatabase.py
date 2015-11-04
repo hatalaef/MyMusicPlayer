@@ -51,7 +51,7 @@ def addSongToDb(dbName, filePath):
     parameters = parameters[0: len(parameters) - 2]
     values = values[0: len(values) - 2]
     
-    sqlStr = "INSERT INTO Songs(%s) VALUES (%s)" % (parameters, values)
+    sqlStr = "INSERT INTO Songs (%s) VALUES (%s)" % (parameters, values)
     
     try:
         db = lite.connect(dbName)

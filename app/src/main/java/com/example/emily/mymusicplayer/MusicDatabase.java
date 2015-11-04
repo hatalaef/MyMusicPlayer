@@ -1,7 +1,12 @@
 package com.example.emily.mymusicplayer;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
@@ -9,22 +14,25 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class MusicDatabase extends SQLiteAssetHelper {
 
-    private static final String DATABASE_NAME = "music";
+    private static final String DATABASE_NAME = "music.db";
     private static final int DATABASE_VERSION = 1;
-
-    private double skill;
-    private HashMap<String, Integer> perks;
-    private double fortifyAlchemy;
 
     public interface TABLES {
         String SONGS = "Songs";
     }
 
     public interface SongsColumns {
+        String ID = "id";
+        String TITLE = "title";
+        String ARTIST = "artist";
+        String ALBUM = "album";
+        String GENRE = "genre";
+        String TIME = "timeStamp";
+        String PATH = "filePath";
     }
 
     public MusicDatabase(Context context) {
@@ -33,18 +41,41 @@ public class MusicDatabase extends SQLiteAssetHelper {
         //context.deleteDatabase(DATABASE_NAME);
     }
 
+    public void addAllSongsToDb(ArrayList<Song> songList, String directory) {
 
-    public void addSongToDb(String filepath) {
+        for (Song song: songList) {
+            addSongToDb(song, directory);
+        }
+
+    }
+
+
+    public void addSongToDb(Song song, String directory) {
         //add a song from the filesystem to the db
+
+        String title = "";
+        String artist = "";
+        String album = "";
+        String genre = "";
+        String filepath = song.getPath().split(directory)[1];
+
         try {
-            Mp3File mp3 = new Mp3File(filepath);
+            Mp3File mp3 = new Mp3File(song.getPath());
+
+            if (mp3.hasId3v1Tag()) {
+                ID3v1 tag = mp3.getId3v1Tag();
+                title = tag.getTitle() != null ? tag.getTitle() : "";
+                artist = tag.getArtist() != null ? tag.getArtist() : "";
+                album = tag.getAlbum() != null ? tag.getAlbum() : "";
+                genre = tag.getGenreDescription() != null ? tag.getGenreDescription() : "";
+            }
 
             if (mp3.hasId3v2Tag()) {
                 ID3v2 tag = mp3.getId3v2Tag();
-                String title = tag.getTitle();
-                String artist = tag.getArtist();
-                String album = tag.getAlbum();
-                String genre = tag.getGenreDescription();
+                title = tag.getTitle() != null ? tag.getTitle() : "";
+                artist = tag.getArtist() != null ? tag.getArtist() : "";
+                album = tag.getAlbum() != null ? tag.getAlbum() : "";
+                genre = tag.getGenreDescription() != null ? tag.getGenreDescription() : "";
             }
 
         } catch (IOException e) {
@@ -55,6 +86,52 @@ public class MusicDatabase extends SQLiteAssetHelper {
             e.printStackTrace();
         }
 
+        SQLiteDatabase db = null;
+
+        try {
+
+            db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(SongsColumns.TITLE, title);
+            values.put(SongsColumns.ARTIST, artist);
+            values.put(SongsColumns.ALBUM, album);
+            values.put(SongsColumns.GENRE, genre);
+            values.put(SongsColumns.PATH, filepath);
+            db.insertWithOnConflict(TABLES.SONGS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        } finally {
+            if (db != null)
+                db.close();
+        }
+    }
+
+
+    //just for testing for now
+    public void getAllSongs() {
+
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        try {
+            db = getReadableDatabase();
+
+            cursor = db.rawQuery("SELECT * FROM " + TABLES.SONGS, null);
+            cursor.moveToFirst();
+
+            do {
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    Log.d(MainActivity.DEBUG_TAG, String.format("%s", cursor.getString(i)));
+                }
+
+            } while (cursor.moveToNext());
+
+
+
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            if (db != null)
+                db.close();
+        }
     }
 
     public int findSongByTitle(String title) {

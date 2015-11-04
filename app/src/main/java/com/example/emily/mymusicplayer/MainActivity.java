@@ -48,6 +48,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     private MusicService musicService;
     private Intent playIntent;
+    private MusicDatabase db;
+
     private boolean musicBound = false;
     private boolean paused = false;
     private boolean playbackPaused = false;
@@ -68,6 +70,11 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
         songList = new ArrayList<>();
         getSongList();
+
+        db = new MusicDatabase(this);
+        db.addAllSongsToDb(songList, FOLDER_PATH + "/");
+
+
         songAdapter = new SongAdapter(this, songList);
 
 
