@@ -71,8 +71,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         songList = new ArrayList<>();
         getSongList();
 
-        db = new MusicDatabase(this);
-        db.addAllSongsToDb(songList, FOLDER_PATH + "/");
+
 
 
         songAdapter = new SongAdapter(this, songList);
@@ -118,6 +117,9 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
             }
         });
 
+        db = new MusicDatabase(this);
+        db.addAllSongsToDb(songList, FOLDER_PATH + "/");
+
     }
 
     @Override
@@ -134,6 +136,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     protected void onDestroy() {
         stopService(playIntent);
         musicService = null;
+        db.closeDatabase();
         super.onDestroy();
     }
 

@@ -26,6 +26,8 @@ public class MusicDatabase extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "music.db";
     private static final int DATABASE_VERSION = 1;
 
+    private static SQLiteDatabase db = null;
+
     public interface TABLES {
         String SONGS = "Songs";
     }
@@ -42,11 +44,19 @@ public class MusicDatabase extends SQLiteAssetHelper {
 
     public MusicDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        db = getWritableDatabase();
         //use if not reading new database
         //context.deleteDatabase(DATABASE_NAME);
     }
 
+    public void closeDatabase() {
+        if (db != null) {
+            db.close();
+        }
+    }
+
     public void addAllSongsToDb(ArrayList<Song> songList, String directory) {
+
 
         for (Song song: songList) {
             addSongToDb(song, directory);
@@ -93,12 +103,6 @@ public class MusicDatabase extends SQLiteAssetHelper {
             e.printStackTrace();
         }
 
-        SQLiteDatabase db = null;
-
-        try {
-
-            db = this.getWritableDatabase();
-
             ContentValues values = new ContentValues();
             values.put(SongsColumns.TITLE, title);
             values.put(SongsColumns.ARTIST, artist);
@@ -106,20 +110,14 @@ public class MusicDatabase extends SQLiteAssetHelper {
             values.put(SongsColumns.GENRE, genre);
             values.put(SongsColumns.PATH, filepath);
             db.insertWithOnConflict(TABLES.SONGS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-        } finally {
-            if (db != null)
-                db.close();
-        }
     }
 
 
     //just for testing for now
     public void getAllSongs() {
 
-        SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
-            db = getReadableDatabase();
 
             cursor = db.rawQuery("SELECT * FROM " + TABLES.SONGS, null);
             cursor.moveToFirst();
@@ -136,8 +134,6 @@ public class MusicDatabase extends SQLiteAssetHelper {
         } finally {
             if (cursor != null)
                 cursor.close();
-            if (db != null)
-                db.close();
         }
     }
 
