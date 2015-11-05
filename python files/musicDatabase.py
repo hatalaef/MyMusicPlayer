@@ -7,56 +7,47 @@ import datetime
 import time
 import math
 import getFiles
+import pdb
 
 reload(sys)
 sys.setdefaultencoding("Cp1252")
 
 eyed3.log.setLevel("ERROR")
 
+FOLDER = "musicFiles"
+
 db = None
 
 def addSongToDb(dbName, filePath):
+
 
     audioFile = eyed3.load(filePath)
 
     global db
     
+    title = ""
+    artist = ""
+    album = ""
+    genre = ""
+    path = filePath.split(FOLDER + "\\")[1]
+    
     parameters = ""
     values = ""
     
-    genre = None
-    title = audioFile.tag.title
-    artist = audioFile.tag.artist
-    album = audioFile.tag.album
-    if audioFile.tag.genre is not None:
+    
+    if audioFile.tag.title is not None:
+        title = audioFile.tag.title
+    if audioFile.tag.artist is not None:
+        artist = audioFile.tag.artist    
+    if audioFile.tag.album is not None:
+        album = audioFile.tag.album
+    if audioFile.tag.genre is not None and audioFile.tag.genre.name is not None:
         genre = audioFile.tag.genre.name
-    
-    
-    if title is not None:
-        parameters += "title, "
-        values += "\"" + title + "\", "
-    if artist is not None:
-        parameters += "artist, "
-        values += "\"" + artist + "\", "
-    if album is not None:
-        parameters += "album, "
-        values += "\"" + album+ "\", "
-    if genre is not None:
-        parameters += "genre, "
-        values += "\"" + genre + "\", "
-    if filePath is not None:
-        parameters += "filePath, "
-        values += "\"" + filePath + "\", " 
-    
-    parameters = parameters[0: len(parameters) - 2]
-    values = values[0: len(values) - 2]
-    
-    sqlStr = "INSERT INTO Songs (%s) VALUES (%s)" % (parameters, values)
     
     try:
         db = lite.connect(dbName)
         cursor = db.cursor()
-        cursor.execute(sqlStr)
+        cursor.execute("INSERT INTO Songs (title, artist, album, genre, filePath) VALUES (?, ?, ?, ?, ?)", (title, artist, album, genre, path))
         db.commit()
         print("Added: " + filePath)
         print
@@ -92,32 +83,20 @@ def findSongByTitle(dbName, title):
         
     return id    
         
-def updateSong(dbName, id, title = None, artist = None, album = None, genre = None, filePath = None):
+def updateSong(dbName, id, title = "", artist = "", album = "", genre = "", filePath = ""):
     global db
     
-    values = ""
+    if filePath.contains(FOLDER):
+        filePath = filePath.split(FOLDER + "/")[1]
     
-    if title != None:
-        values += "title ='"+ title +"', "
-    if artist != None:
-        values += "artist ='"+ artist +"', "
-    if album != None:
-        values += "album ='"+ album +"', "        
-    if genre != None:
-        values += "genre ='"+ genre +"', "
-    if filePath != None:
-        values += "filePath ='"+ genre +"', "    
-        
-    values = values[0: len(values) - 2]   
-    
-    sqlStr  = "UPDATE Songs SET %s WHERE id = %d" % (values, id)
+    sqlStr = "UPDATE Songs SET title = %s, artist = %s, album = %s, genre = %s, filePath = %s,WHERE id = %d" % (title, artist, album, genre, filePath, id)
     print sqlStr
     
     if values != "":    
         try:
             db = lite.connect(dbName)
             cursor = db.cursor()
-            cursor.execute(sqlStr)
+            cursor.execute("UPDATE Songs SET title = ?, artist = ?, album = ?, genre = ?, filePath = ? WHERE id = ?", (title, artist, album, genre, filePath, id))
             
             db.commit()
         
@@ -130,11 +109,16 @@ def updateSong(dbName, id, title = None, artist = None, album = None, genre = No
             
 def getLastSongRow(dbName):
     global db
+    
+    filePath = ""
 
     try:
         db = lite.connect(dbName)
         cursor = db.cursor()
-        filePath = cursor.execute("SELECT filePath FROM Songs ORDER BY id DESC LIMIT 1").fetchone()[0]
+        
+        fileExists = cursor.execute("SELECT EXISTS(SELECT 1 FROM Songs ORDER BY id DESC LIMIT 1)").fetchone()
+        if fileExists[0] == 1:
+            filePath = cursor.execute("SELECT filePath FROM Songs ORDER BY id DESC LIMIT 1").fetchone()[0]
         
     finally:
         db.close()
