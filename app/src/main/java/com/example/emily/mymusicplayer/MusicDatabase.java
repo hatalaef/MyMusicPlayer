@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -62,6 +63,9 @@ public class MusicDatabase extends SQLiteAssetHelper {
             addSongToDb(song, directory);
         }
 
+        Uri uri = DataBaseProvider.CONTENT_URI;
+
+
         exportDB();
 
     }
@@ -112,6 +116,21 @@ public class MusicDatabase extends SQLiteAssetHelper {
             db.insertWithOnConflict(TABLES.SONGS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
     }
 
+    public Cursor getAllSongs2() {
+
+        boolean distinct = false;
+        String table = TABLES.SONGS;
+        String[] columns = {SongsColumns.ID, SongsColumns.TITLE};
+        String selection = null;
+        String[] selectionArgs = null;
+        String groupBy = null;
+        String having = null;
+        String orderBy = null;
+        String limit = null;
+
+        return db.query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+
+    }
 
     //just for testing for now
     public void getAllSongs() {

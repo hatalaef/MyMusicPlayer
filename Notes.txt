@@ -21,6 +21,7 @@ Stuff to Do!
 		Python
 			Needs changing to add empty Strings instead of nulls
 		Phone
+			Change to using cursorloader
     
 Notes
     Changed adapter view to SongPos. If I'm careful about updating the adapter when the View changes, I think it should work?
