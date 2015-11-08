@@ -1,46 +1,81 @@
 package com.example.emily.mymusicplayer;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 public class DataBaseProvider extends ContentProvider {
 
-    private MusicDatabase db;
-    private static final String AUTHORITY ="com.example.emily.musicplayer.DataBaseProvider";
-    public static final int SONGS = 1;
-    public static final int SONGS_ID = 2;
+    //all uris share these parts
+    public static final String AUTHORITY = "com.example.emily.mymusicplayer.mymusicprovider";
+    public static final String SCHEME = "content://";
 
-    private static final String SONGS_BASE_PATH = "songs";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + SONGS_BASE_PATH);
-    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/";
-    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/";
+    //uris
+    //used for all songs
+    public static final String SONGS = SCHEME + AUTHORITY + "/" + MusicDatabase.TABLES.SONGS;
+    public static final Uri URI_SONGS = Uri.parse(SONGS);
 
-    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    public static final int SONGS_LIST = 1;
+    public static final int SONGS_ITEM = 2;
+
+    //used for a signal song, add id to end
+    public static final String SONG_BASE = SONGS + "/";
+
+    public static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
     static {
-        uriMatcher.addURI(AUTHORITY, SONGS_BASE_PATH, SONGS);
-        uriMatcher.addURI(AUTHORITY, SONGS_BASE_PATH + "/#", SONGS_ID);
+        uriMatcher.addURI(AUTHORITY, MusicDatabase.TABLES.SONGS, SONGS_LIST);
+        uriMatcher.addURI(AUTHORITY, MusicDatabase.TABLES.SONGS + "/#", SONGS_ITEM);
     }
+
+    private MusicDatabase db;
+
 
 
 
     @Override
     public boolean onCreate() {
         db = new MusicDatabase(getContext());
-        return true;
+        if(db == null) {
+            Log.d(MainActivity.DEBUG_TAG, "DataBaseProvider: Didn't create db");
+            return false;
+        }
+        else {
+            Log.d(MainActivity.DEBUG_TAG, "DataBaseProvider: Created db");
+            return true;
+        }
+
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        queryBuilder.setTables(MusicDatabase.TABLES.SONGS);
 
-        if(uriMatcher.match(uri)==SONGS) {
-            return db.getAllSongs2();
+        switch (uriMatcher.match(uri)) {
+            case SONGS_LIST:
+                break;
+            case SONGS_ITEM:
+                queryBuilder.appendWhere(MusicDatabase.SongsColumns.ID + "=" + uri.getLastPathSegment());
+            default:
+                throw new IllegalArgumentException(("Invalid URI: " + uri));
         }
-        else
-            return null;
+
+        Cursor result = queryBuilder.query(db.getWritableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
+        //result.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return result;
+
+
+        //if(uriMatcher.match(uri)==SONGS) {
+        //    return db.getAllSongs2(uri, projection, selection, selectionArgs, sortOrder);
+        //}
+        //else
+        //    return null;
         /*
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(MusicDatabase.TABLES.SONGS);
@@ -48,7 +83,7 @@ public class DataBaseProvider extends ContentProvider {
         int uriType = uriMatcher.match(uri);
         switch (uriType) {
             case SONGS_ID:
-                queryBuilder.appendWhere(MusicDatabase.SongsColumns.ID + "=" + uri.getLastPathSegment());
+                queryBuilder.appendWhere(ID + "=" + uri.getLastPathSegment());
                 break;
             case SONGS:
                 //no filter
@@ -68,7 +103,14 @@ public class DataBaseProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        return null;
+        switch(uriMatcher.match(uri)) {
+            case SONGS_LIST:
+                return null;
+            case SONGS_ITEM:
+                return null;
+            default:
+                throw new IllegalArgumentException("Invalid URI: " + uri);
+        }
     }
 
     @Override

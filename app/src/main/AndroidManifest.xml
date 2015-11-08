@@ -25,7 +25,7 @@
         <service android:name=".MusicService" />
 
         <provider
-            android:authorities="com.example.emily.mymusicplayer.DataBaseProvider"
+            android:authorities="com.example.emily.mymusicplayer.mymusicprovider"
             android:multiprocess="true"
             android:name="com.example.emily.mymusicplayer.DataBaseProvider" />
     </application>

@@ -1,10 +1,10 @@
 package com.example.emily.mymusicplayer;
 
+import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -63,9 +63,6 @@ public class MusicDatabase extends SQLiteAssetHelper {
             addSongToDb(song, directory);
         }
 
-        Uri uri = DataBaseProvider.CONTENT_URI;
-
-
         exportDB();
 
     }
@@ -116,7 +113,7 @@ public class MusicDatabase extends SQLiteAssetHelper {
             db.insertWithOnConflict(TABLES.SONGS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
     }
 
-    public Cursor getAllSongs2() {
+    public Cursor getAllSongs2(ContentProvider provider) {
 
         boolean distinct = false;
         String table = TABLES.SONGS;
@@ -127,8 +124,8 @@ public class MusicDatabase extends SQLiteAssetHelper {
         String having = null;
         String orderBy = null;
         String limit = null;
-
-        return db.query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+        return provider.query(null, columns, selection, selectionArgs, orderBy);
+        //return db.query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
 
     }
 
@@ -190,6 +187,7 @@ public class MusicDatabase extends SQLiteAssetHelper {
             destination.transferFrom(source, 0, source.size());
             source.close();
             destination.close();
+            Log.d(MainActivity.DEBUG_TAG, "Created dbcopy in: " + backupDBPath);
         } catch(IOException e) {
             e.printStackTrace();
         }

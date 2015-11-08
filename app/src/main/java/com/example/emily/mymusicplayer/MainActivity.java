@@ -120,6 +120,15 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         db = new MusicDatabase(this);
         db.addAllSongsToDb(songList, FOLDER_PATH + "/");
 
+        Uri uri = DataBaseProvider.URI_SONGS;
+        Cursor cursor = this.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        do {
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                Log.d(MainActivity.DEBUG_TAG, String.format("%s", cursor.getString(i)));
+            }
+        } while (cursor.moveToNext());
+
     }
 
     @Override
