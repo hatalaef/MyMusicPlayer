@@ -91,6 +91,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
+
     //used in the MainActivity
     public void setOnItemClickListener(ClickListener clickListener) {
         SongAdapter.clickListener = clickListener;

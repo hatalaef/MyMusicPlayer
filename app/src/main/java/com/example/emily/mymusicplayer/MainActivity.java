@@ -1,9 +1,12 @@
 package com.example.emily.mymusicplayer;
 
+import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,13 +29,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-public class MainActivity extends FragmentActivity implements MusicControls.OnFragmentInteractionListener {
+public class MainActivity extends FragmentActivity implements MusicControls.OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Uri STORAGE_LOCATION = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
     public static final String FOLDER_PATH = "MyMusic";
     public static final String PLAYLIST_PATH = "MyMusic/Playlists";
     public static final String PLAYLIST_TYPE = "m3u";
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
+    private static final int URL_LOADER = 0;
+    private static final int SONG_FILE_LOADER = 1;
 
     private MusicControls musicControls;
 
@@ -53,7 +58,6 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     private boolean musicBound = false;
     private boolean paused = false;
     private boolean playbackPaused = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,15 +72,16 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         layoutManager = new LinearLayoutManager(this);
         mainListMusic.setLayoutManager(layoutManager);
 
+
+        songAdapter = new SongAdapter(this, null);
         songList = new ArrayList<>();
+        getLoaderManager().initLoader(SONG_FILE_LOADER, null, this);
         getSongList();
 
 
 
 
-        songAdapter = new SongAdapter(this, songList);
-
-
+        //songAdapter = new SongAdapter(this, songList);
         playlistList = new ArrayList<>();
         getPlaylistList();
         playlistAdapter = new PlaylistAdapter(this, playlistList);
@@ -116,6 +121,8 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
             public void onItemLongClick(int position, View v) {
             }
         });
+
+        getLoaderManager().initLoader(URL_LOADER, null, this);
 
         db = new MusicDatabase(this);
         db.addAllSongsToDb(songList, FOLDER_PATH + "/", getContentResolver());
@@ -297,7 +304,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                             }
                         }
                         reader.close();
-                        } catch (Exception e){
+                    } catch (Exception e){
                         e.printStackTrace();
                     }
                     String thisTitle = files[i].getName();
@@ -383,5 +390,87 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     @Override
     public void onRepeatClicked() {
         musicService.setRepeat();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri table;
+        String[] projection;
+        String selection;
+        String[] selectionArgs;
+        String sortOrder;
+
+        switch (id) {
+            case SONG_FILE_LOADER:
+                Uri musicUri = STORAGE_LOCATION;
+                String folderPath = "%" + FOLDER_PATH + "%";
+
+                table = musicUri;
+                projection = null;
+                selection = MediaStore.Audio.Media.DATA + " like ? ";
+                selectionArgs = new String[]{folderPath};
+                sortOrder = null;
+                return new CursorLoader(this, table, projection, selection, selectionArgs, sortOrder);
+
+            case URL_LOADER:
+                table = DataBaseProvider.URI_SONGS;
+                projection = null;
+                selection = null;
+                selectionArgs = null;
+                sortOrder = null;
+                return new CursorLoader(this, table, projection, selection, selectionArgs, sortOrder);
+
+            default:
+                throw new IllegalArgumentException(("Invalid Cursor id: " + id));
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        int id = loader.getId();
+
+
+
+        switch (id) {
+            case SONG_FILE_LOADER:
+                if(data!=null && data.moveToFirst()){
+                    //get columns
+                    int titleColumn = data.getColumnIndex
+                            (android.provider.MediaStore.Audio.Media.TITLE);
+                    int idColumn = data.getColumnIndex
+                            (android.provider.MediaStore.Audio.Media._ID);
+                    int artistColumn = data.getColumnIndex
+                            (android.provider.MediaStore.Audio.Media.ARTIST);
+                    int durationColumn = data.getColumnIndex
+                            (android.provider.MediaStore.Audio.Media.DURATION);
+                    int dataColumn = data.getColumnIndex
+                            (MediaStore.Audio.Media.DATA);
+                    //add songs to list
+                    int i = 0;
+                    do {
+                        long thisId = data.getLong(idColumn);
+                        String thisTitle = data.getString(titleColumn);
+                        String thisArtist = data.getString(artistColumn);
+                        int theDuration = data.getInt(durationColumn);
+                        String thisPath = data.getString(dataColumn);
+                        songList.add(new Song(thisId, thisTitle, thisArtist, theDuration, thisPath, i));
+                        i++;
+                    }
+                    while (data.moveToNext());
+                }
+                songList.
+                break;
+            case URL_LOADER:
+                break;
+            default:
+                throw new IllegalArgumentException(("Invalid Cursor id: " + id));
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
