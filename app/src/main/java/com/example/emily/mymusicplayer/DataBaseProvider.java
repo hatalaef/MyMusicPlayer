@@ -1,14 +1,20 @@
 package com.example.emily.mymusicplayer;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
 public class DataBaseProvider extends ContentProvider {
+
+    private static final String SONG_TABLE = MusicDatabase.TABLES.SONGS;
 
     //all uris share these parts
     public static final String AUTHORITY = "com.example.emily.mymusicplayer.mymusicprovider";
@@ -16,30 +22,33 @@ public class DataBaseProvider extends ContentProvider {
 
     //uris
     //used for all songs
-    public static final String SONGS = SCHEME + AUTHORITY + "/" + MusicDatabase.TABLES.SONGS;
+    public static final String SONGS = SCHEME + AUTHORITY + "/" + SONG_TABLE;
     public static final Uri URI_SONGS = Uri.parse(SONGS);
 
     public static final int SONGS_LIST = 1;
     public static final int SONGS_ITEM = 2;
 
-    //used for a signal song, add id to end
-    public static final String SONG_BASE = SONGS + "/";
+    //types
+    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/example.emily.mymusicplayer.music/ " + SONG_TABLE;
+    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/example.emily.mymusicplayer/music/" + SONG_TABLE;
 
     public static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        uriMatcher.addURI(AUTHORITY, MusicDatabase.TABLES.SONGS, SONGS_LIST);
-        uriMatcher.addURI(AUTHORITY, MusicDatabase.TABLES.SONGS + "/#", SONGS_ITEM);
+        uriMatcher.addURI(AUTHORITY, SONG_TABLE, SONGS_LIST);
+        uriMatcher.addURI(AUTHORITY, SONG_TABLE + "/#", SONGS_ITEM);
     }
 
-    private MusicDatabase db;
+    private SQLiteDatabase db;
 
 
 
 
     @Override
     public boolean onCreate() {
-        db = new MusicDatabase(getContext());
+        MusicDatabase mDb = new MusicDatabase(getContext());
+        db = mDb.getWritableDatabase();
+
         if(db == null) {
             Log.d(MainActivity.DEBUG_TAG, "DataBaseProvider: Didn't create db");
             return false;
@@ -54,7 +63,7 @@ public class DataBaseProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(MusicDatabase.TABLES.SONGS);
+        queryBuilder.setTables(SONG_TABLE);
 
         switch (uriMatcher.match(uri)) {
             case SONGS_LIST:
@@ -65,49 +74,19 @@ public class DataBaseProvider extends ContentProvider {
                 throw new IllegalArgumentException(("Invalid URI: " + uri));
         }
 
-        Cursor result = queryBuilder.query(db.getWritableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor result = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         //result.setNotificationUri(getContext().getContentResolver(), uri);
 
         return result;
-
-
-        //if(uriMatcher.match(uri)==SONGS) {
-        //    return db.getAllSongs2(uri, projection, selection, selectionArgs, sortOrder);
-        //}
-        //else
-        //    return null;
-        /*
-        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(MusicDatabase.TABLES.SONGS);
-
-        int uriType = uriMatcher.match(uri);
-        switch (uriType) {
-            case SONGS_ID:
-                queryBuilder.appendWhere(ID + "=" + uri.getLastPathSegment());
-                break;
-            case SONGS:
-                //no filter
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI");
-
-
-        }
-
-        Cursor cursor = queryBuilder.query(db.getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
-
-        return cursor;
-        */
     }
 
     @Override
     public String getType(Uri uri) {
         switch(uriMatcher.match(uri)) {
             case SONGS_LIST:
-                return null;
+                return CONTENT_TYPE;
             case SONGS_ITEM:
-                return null;
+                return CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("Invalid URI: " + uri);
         }
@@ -115,17 +94,58 @@ public class DataBaseProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        if (uriMatcher.match(uri) != SONGS_LIST) {
+            throw new IllegalArgumentException("Invalid URI: " + uri);
+        }
+
+        long id = db.insert(SONG_TABLE, null, values);
+
+        if (id > 0)
+            return ContentUris.withAppendedId(uri, id);
+        throw new SQLException("Error inserting into table " +SONG_TABLE);
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int deleted = 0;
+
+        switch (uriMatcher.match(uri)) {
+            case SONGS_LIST:
+                db.delete(SONG_TABLE, selection, selectionArgs);
+                break;
+            case SONGS_ITEM:
+                String where = MusicDatabase.SongsColumns.ID + " = " + uri.getLastPathSegment();
+                if (!selection.isEmpty())
+                    where += " AND " + selection;
+                deleted = db.delete(SONG_TABLE, where, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid URI: " + uri);
+        }
+
+        return deleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+
+        int updated = 0;
+
+        switch (uriMatcher.match(uri)) {
+            case SONGS_LIST:
+                db.updateWithOnConflict(SONG_TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+                break;
+            case SONGS_ITEM:
+                String where = MusicDatabase.SongsColumns.ID + " = " + uri.getLastPathSegment();
+                if (!selection.isEmpty())
+                    where += " AND " + selection;
+                updated = db.updateWithOnConflict(SONG_TABLE, values, where, selectionArgs, SQLiteDatabase.CONFLICT_IGNORE);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid URI: " + uri);
+        }
+
+        return updated;
     }
 
 }

@@ -1,10 +1,11 @@
 package com.example.emily.mymusicplayer;
 
-import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -56,19 +57,18 @@ public class MusicDatabase extends SQLiteAssetHelper {
         }
     }
 
-    public void addAllSongsToDb(ArrayList<Song> songList, String directory) {
+    public void addAllSongsToDb(ArrayList<Song> songList, String directory, ContentResolver contentResolver) {
 
 
         for (Song song: songList) {
-            addSongToDb(song, directory);
+            addSongToDb(song, directory, contentResolver);
         }
-
         exportDB();
 
     }
 
 
-    public void addSongToDb(Song song, String directory) {
+    public void addSongToDb(Song song, String directory, ContentResolver contentResolver) {
         //add a song from the filesystem to the db
 
         String title = "";
@@ -104,53 +104,29 @@ public class MusicDatabase extends SQLiteAssetHelper {
             e.printStackTrace();
         }
 
-            ContentValues values = new ContentValues();
-            values.put(SongsColumns.TITLE, title);
-            values.put(SongsColumns.ARTIST, artist);
-            values.put(SongsColumns.ALBUM, album);
-            values.put(SongsColumns.GENRE, genre);
-            values.put(SongsColumns.PATH, filepath);
-            db.insertWithOnConflict(TABLES.SONGS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        Uri uri = DataBaseProvider.URI_SONGS;
+        ContentValues values = new ContentValues();
+        values.put(SongsColumns.TITLE, title);
+        values.put(SongsColumns.ARTIST, artist);
+        values.put(SongsColumns.ALBUM, album);
+        values.put(SongsColumns.GENRE, genre);
+        values.put(SongsColumns.PATH, filepath);
+        String selection = null;
+        String[] selectionArgs = null;
+
+        contentResolver.update(uri, values, selection, selectionArgs);
+
     }
 
-    public Cursor getAllSongs2(ContentProvider provider) {
+    public Cursor getAllSongs(ContentResolver contentResolver) {
 
-        boolean distinct = false;
-        String table = TABLES.SONGS;
+        Uri uri = DataBaseProvider.URI_SONGS;
         String[] columns = {SongsColumns.ID, SongsColumns.TITLE};
         String selection = null;
         String[] selectionArgs = null;
-        String groupBy = null;
-        String having = null;
         String orderBy = null;
-        String limit = null;
-        return provider.query(null, columns, selection, selectionArgs, orderBy);
-        //return db.query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+        return contentResolver.query(uri, columns, selection, selectionArgs, orderBy);
 
-    }
-
-    //just for testing for now
-    public void getAllSongs() {
-
-        Cursor cursor = null;
-        try {
-
-            cursor = db.rawQuery("SELECT * FROM " + TABLES.SONGS, null);
-            cursor.moveToFirst();
-
-            do {
-                for (int i = 0; i < cursor.getColumnCount(); i++) {
-                    Log.d(MainActivity.DEBUG_TAG, String.format("%s", cursor.getString(i)));
-                }
-
-            } while (cursor.moveToNext());
-
-
-
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
     }
 
     public int findSongByTitle(String title) {
