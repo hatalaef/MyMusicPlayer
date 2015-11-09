@@ -76,21 +76,18 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
         songAdapter = new SongAdapter(this, null);
         songList = new ArrayList<>();
         getLoaderManager().initLoader(SONG_FILE_LOADER, null, this);
-        getSongList();
 
 
+        songAdapter = new SongAdapter(this, songList);
 
-
-        //songAdapter = new SongAdapter(this, songList);
         playlistList = new ArrayList<>();
         getPlaylistList();
         playlistAdapter = new PlaylistAdapter(this, playlistList);
 
         CreatePlaylist.setContentResolver(getContentResolver());
 
-
-        songsFromPlaylist = new ArrayList<>(songList);
         nowPlayingList = new ArrayList<>(songList);
+        songsFromPlaylist = new ArrayList<>(songList);
         mainListMusic.setAdapter(songAdapter);
 
         //CreatePlaylist.makePlaylist(songList, PLAYLIST_PATH, "testPlaylist.m3u", getApplicationContext());
@@ -218,16 +215,18 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     }
 
     public void switchNowPlaying() {
-        songAdapter = new SongAdapter(this, nowPlayingList);
-        mainListMusic.setAdapter(songAdapter);
+        //songAdapter = new SongAdapter(this, nowPlayingList);
         musicService.changeNowPlaying(nowPlayingList, songAdapter);
+        mainListMusic.setAdapter(songAdapter);
+
 
     }
 
     public void switchAllSongs() {
-        songAdapter = new SongAdapter(this, songList);
-        mainListMusic.setAdapter(songAdapter);
+        //songAdapter = new SongAdapter(this, songList);
         musicService.changeNowPlaying(songList, songAdapter);
+        mainListMusic.setAdapter(songAdapter);
+
     }
 
     public void switchPlaylists() {
@@ -429,9 +428,6 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         int id = loader.getId();
-
-
-
         switch (id) {
             case SONG_FILE_LOADER:
                 if(data!=null && data.moveToFirst()){
@@ -459,7 +455,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                     }
                     while (data.moveToNext());
                 }
-                songList.
+                songAdapter.swapCursor(data);
                 break;
             case URL_LOADER:
                 break;

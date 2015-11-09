@@ -1,7 +1,6 @@
 package com.example.emily.mymusicplayer;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,17 +12,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 //Adapter class for the RecyclerView. To get click listeners on items, had to use an interface. Getting tags from the view outside of the class seems very hard.
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
+public class SongAdapterOld extends RecyclerView.Adapter<SongAdapterOld.ViewHolder> {
 
     private static ArrayList<Song> songs;
     private LayoutInflater inflater;
     private static ClickListener clickListener;
     private static Context context;
-    Cursor dataCursor;
 
-    public SongAdapter(Context context, ArrayList<Song> songs) {
-        SongAdapter.songs = songs;
-        SongAdapter.context = context;
+    public SongAdapterOld(Context context, ArrayList<Song> songs) {
+        SongAdapterOld.songs = songs;
+        SongAdapterOld.context = context;
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -85,11 +83,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (dataCursor == null)
-            return 0;
-        else
-            return dataCursor.getCount();
-        //return songs.size();
+        return songs.size();
     }
 
     @Override
@@ -100,7 +94,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     //used in the MainActivity
     public void setOnItemClickListener(ClickListener clickListener) {
-        SongAdapter.clickListener = clickListener;
+        SongAdapterOld.clickListener = clickListener;
     }
 
     public interface ClickListener {
@@ -108,26 +102,4 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         void onItemLongClick(int position, View v);
     }
 
-    public void changeCursor(Cursor cursor) {
-        Cursor old = swapCursor(cursor);
-        if (old != null)
-            old.close();
-    }
-
-    public Cursor swapCursor(Cursor cursor) {
-        if (dataCursor == cursor)
-            return null;
-        Cursor oldCursor = dataCursor;
-        this.dataCursor = cursor;
-        if (cursor != null)
-            this.notifyDataSetChanged();
-        return oldCursor;
-    }
-
-    private Object getItem(int position) {
-        dataCursor.moveToPosition(position);
-        //Load data from dataCursor and return it
-        //todo change
-        return null;
-    }
 }
