@@ -38,11 +38,14 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
     public static final String DEBUG_TAG = "MyMusicPlayerDebug";
     private static final int URL_LOADER = 0;
     private static final int SONG_FILE_LOADER = 1;
+    private static final int SONG_LIST_LOADER = 2;
+    //private static final int SONG_FILE_LOADER = 3;
 
     private MusicControls musicControls;
 
     private RecyclerView mainListMusic;
     private SongAdapter songAdapter;
+    private SongAdapter nowPlayingAdapter;
     private PlaylistAdapter playlistAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
@@ -74,6 +77,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
 
         songAdapter = new SongAdapter(this, null);
+        nowPlayingAdapter = new SongAdapter(this, null);
         songList = new ArrayList<>();
         getLoaderManager().initLoader(SONG_FILE_LOADER, null, this);
 
@@ -112,6 +116,7 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
                 songsFromPlaylist = new ArrayList<>(CreatePlaylist.songsFromPlaylist(playlistList, playlistList.get(position), playlistAdapter, position));
                 if (!nowPlayingList.containsAll(songsFromPlaylist))
                     nowPlayingList = songsFromPlaylist;
+                nowPlayingAdapter = new SongAdapter(getApplicationContext(), nowPlayingList);
             }
 
             @Override
@@ -216,21 +221,21 @@ public class MainActivity extends FragmentActivity implements MusicControls.OnFr
 
     public void switchNowPlaying() {
         //songAdapter = new SongAdapter(this, nowPlayingList);
-        musicService.changeNowPlaying(nowPlayingList, songAdapter);
-        mainListMusic.setAdapter(songAdapter);
-
-
+        //musicService.changeNowPlaying(nowPlayingList, nowPlayingAdapter);
+        mainListMusic.setAdapter(nowPlayingAdapter);
+        //songAdapter.notifyDataSetChanged();
     }
 
     public void switchAllSongs() {
         //songAdapter = new SongAdapter(this, songList);
-        musicService.changeNowPlaying(songList, songAdapter);
-        mainListMusic.setAdapter(songAdapter);
-
+        musicService.changeNowPlaying(songList, nowPlayingAdapter);
+        mainListMusic.setAdapter(nowPlayingAdapter);
+        //songAdapter.notifyDataSetChanged();
     }
 
     public void switchPlaylists() {
         mainListMusic.setAdapter(playlistAdapter);
+        playlistAdapter.notifyDataSetChanged();
     }
 
     public void getSongList() {
