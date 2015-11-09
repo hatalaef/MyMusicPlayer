@@ -88,25 +88,20 @@ def updateSong(dbName, id, title = "", artist = "", album = "", genre = "", file
     
     if filePath.contains(FOLDER):
         filePath = filePath.split(FOLDER + "/")[1]
-    
-    sqlStr = "UPDATE Songs SET title = %s, artist = %s, album = %s, genre = %s, filePath = %s,WHERE id = %d" % (title, artist, album, genre, filePath, id)
-    print sqlStr
-    
-    if values != "":    
-        try:
-            db = lite.connect(dbName)
-            cursor = db.cursor()
-            cursor.execute("UPDATE Songs SET title = ?, artist = ?, album = ?, genre = ?, filePath = ? WHERE id = ?", (title, artist, album, genre, filePath, id))
-            
-            db.commit()
+    try:
+        db = lite.connect(dbName)
+        cursor = db.cursor()
+        cursor.execute("UPDATE Songs SET title = ?, artist = ?, album = ?, genre = ?, filePath = ? WHERE id = ?", (title, artist, album, genre, filePath, id))
         
-        except lite.Error, e:
-            print "Error: %s" %e.args[0]
-            print sys.exc_traceback.tb_lineno
-            raise e
-        finally:
-            db.close()
-            
+        db.commit()
+    
+    except lite.Error, e:
+        print "Error: %s" %e.args[0]
+        print sys.exc_traceback.tb_lineno
+        raise e
+    finally:
+        db.close()
+        
 def getLastSongRow(dbName):
     global db
     

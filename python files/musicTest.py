@@ -23,11 +23,13 @@ playlistFiles = getFiles.getTheseFiles(playlistDirectory, ".m3u")
 
 lastFile = musicDirectory + "\\" + musicDatabase.getLastSongRow(db)
 
-for file in musicFiles:
-    musicDatabase.compareTimes(db, file)
-    if checkFile and file == lastFile:
-        checkFile = False
-    elif not checkFile:
-        musicDatabase.addSongToDb(db, file)
+musicDatabse.updateSong(db, 3, title="new title")
+
+#for file in musicFiles:
+#    musicDatabase.compareTimes(db, file)
+#    if checkFile and file == lastFile:
+#        checkFile = False
+#    elif not checkFile:
+#        musicDatabase.addSongToDb(db, file)
 
 
